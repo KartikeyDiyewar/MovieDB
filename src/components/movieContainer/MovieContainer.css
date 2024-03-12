@@ -1,0 +1,40 @@
+.movie-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: center;
+  align-items: center;
+  margin-top: 4rem;
+}
+
+.movie-container-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-icon {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+  position: relative;
+  top: 8rem;
+}
+
+@media screen and (max-width: 1080px) {
+  .movie-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .movie-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .movie-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

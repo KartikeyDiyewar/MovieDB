@@ -1,0 +1,25 @@
+.card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem;
+  padding: 1rem;
+  width: 15rem;
+}
+
+.movie-text-container {
+  width: 100%;
+  color: antiquewhite;
+  background-color: rgb(55, 55, 55);
+  text-align: center;
+}
+
+.movie-poster {
+  width: 100%;
+}
+
+.movie-text {
+  padding: 0.5rem;
+  margin: 0.25rem;
+}

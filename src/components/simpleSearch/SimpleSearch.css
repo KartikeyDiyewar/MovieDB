@@ -1,0 +1,63 @@
+#search-holder {
+  padding: 0.75rem;
+  appearance: none;
+  width: 11rem;
+  border-radius: 8px;
+  background-color: antiquewhite;
+  color: rgb(63, 63, 63);
+}
+
+#search-holder:hover {
+  border: 2px solid rgb(18, 23, 23);
+}
+
+.search-btn {
+  position: relative;
+  top: 3px;
+}
+
+#search-img {
+  width: 1.2rem;
+}
+
+/* .search-btn {
+  padding: 0.5rem;
+  border-radius: 8px;
+  background-color: rgb(215, 215, 215);
+  margin: 0.1rem;
+} */
+
+/* .search-btn:hover {
+  background-color: rgb(162, 162, 162);
+} */
+
+.search-btn {
+  background-color: #c2fbd7;
+  border-radius: 8px;
+  box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
+    rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
+    rgba(44, 187, 99, 0.15) 0 16px 32px;
+  color: green;
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
+  margin: 0.2rem;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.search-btn:hover {
+  box-shadow: rgba(44, 187, 99, 0.35) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
+    rgba(44, 187, 99, 0.25) 0 4px 8px, rgba(44, 187, 99, 0.25) 0 8px 16px,
+    rgba(44, 187, 99, 0.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
