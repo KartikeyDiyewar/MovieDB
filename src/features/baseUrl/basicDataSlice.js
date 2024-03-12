@@ -43,7 +43,7 @@ export const basicDataSlice = createSlice({
   initialState,
   reducers: {
     setSearch: (state, action) => {
-      console.log(action.payload);
+      //console.log(action.payload);
       state.searchTerm = action.payload;
     },
   },
