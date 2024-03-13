@@ -1,18 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./MovieSelector.css";
 import { useDispatch } from "react-redux";
-import { fetchMovies } from "../../features/baseUrl/basicDataSlice";
+import { setSelect } from "../../features/baseUrl/basicDataSlice";
 
 const MovieSelector = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchMovies("popular"));
-  }, []);
+
   return (
     <select
       onChange={(e) => {
-        // console.log(e.target.value);
-        dispatch(fetchMovies(e.target.value));
+        dispatch(setSelect(e.target.value));
       }}
       name="movie-selector"
       id="movie-selector"

@@ -5,23 +5,30 @@ const initialState = {
   urlData: [],
   isData: false,
   searchTerm: "",
+  isSearch: false,
+  selectTerm: "popular",
+  currentPage: 1,
 };
 
-export const fetchMovies = createAsyncThunk("fetchMovies", async (type) => {
-  try {
-    const response = await tmdbapi.get(`/movie/${type}`);
-    const results = response.data.results;
-    return results;
-  } catch (error) {
-    console.log(error);
+export const fetchMovies = createAsyncThunk(
+  "fetchMovies",
+  async (arg, thunkAPI) => {
+    const type = thunkAPI.getState().base.selectTerm;
+    const page = thunkAPI.getState().base.currentPage;
+    try {
+      const response = await tmdbapi.get(`/movie/${type}?page=${page}`);
+      const results = response.data.results;
+      return results;
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 export const searchMovie = createAsyncThunk(
   "searchMovie",
   async (arg, thunkAPI) => {
     const val = thunkAPI.getState().base.searchTerm;
-
     try {
       if (val == "") {
         alert("Enter the search");
@@ -43,12 +50,26 @@ export const basicDataSlice = createSlice({
   initialState,
   reducers: {
     setSearch: (state, action) => {
-      //console.log(action.payload);
+      state.isSearch = true;
+      state.currentPage = 1;
       state.searchTerm = action.payload;
+    },
+    setSelect: (state, action) => {
+      state.isSearch = false;
+      state.isData = false;
+      state.currentPage = 1;
+      state.selectTerm = action.payload;
+    },
+    setPage: (state, action) => {
+      state.currentPage = state.currentPage + 1;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
+      if (state.isData && state.currentPage > 1) {
+        state.urlData = [...state.urlData, ...action.payload];
+        return state;
+      }
       state.urlData = action.payload;
       state.isData = true;
       return state;
@@ -70,6 +91,6 @@ export const basicDataSlice = createSlice({
   },
 });
 
-export const { setSearch } = basicDataSlice.actions;
+export const { setSearch, setSelect, setPage } = basicDataSlice.actions;
 
 export default basicDataSlice.reducer;
