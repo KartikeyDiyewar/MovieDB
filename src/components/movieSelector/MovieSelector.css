@@ -1,4 +1,4 @@
-#movie-selector {
+.movie-selector {
   padding: 0.75rem;
   appearance: none;
   width: 11rem;
@@ -12,6 +12,6 @@
   color: rgb(63, 63, 63);
 }
 
-#movie-selector:hover {
+.movie-selector:hover {
   border: 2px solid rgb(18, 23, 23);
 }

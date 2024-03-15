@@ -10,11 +10,11 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <SimpleSearch />
-      <div className="title-container">
-        <h3>
+      <div className="title-container item2">
+        <h1>
           <img id="titleImg" src={titleImg} alt="titleImg" />
           KD Moviez
-        </h3>
+        </h1>
         <span id="total-num">Results: {totalData.total_results}</span>
       </div>
       <MovieSelector />

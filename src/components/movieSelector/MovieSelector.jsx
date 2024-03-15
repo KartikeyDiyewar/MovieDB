@@ -12,7 +12,7 @@ const MovieSelector = () => {
         dispatch(setSelect(e.target.value));
       }}
       name="movie-selector"
-      id="movie-selector"
+      className="movie-selector item3"
       defaultValue="popular"
     >
       <option value="popular">Popular Movies</option>

@@ -27,7 +27,7 @@ const MovieContainer = () => {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        console.log(entries);
+        // console.log(entries);
         dispatch(setPage());
       }
     });

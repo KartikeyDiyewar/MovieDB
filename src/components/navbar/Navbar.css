@@ -22,6 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 2.1rem;
+  margin-right: 2.1rem;
 }
 
 #titleImg {
@@ -34,4 +36,31 @@
   color: black;
   background-color: gray;
   border-radius: 8px 0px;
+}
+
+@media screen and (max-width: 650px) {
+  .navbar {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+  .item1 {
+    order: 2;
+    scale: 0.75;
+    margin-left: 0;
+  }
+
+  .item2 {
+    order: 1;
+  }
+
+  .item3 {
+    order: 3;
+    scale: 0.75;
+  }
+}
+
+@media screen and (max-width: 418px) {
+  .navbar {
+    flex-direction: column;
+  }
 }

@@ -31,3 +31,10 @@
   padding: 0.5rem;
   margin: 0.25rem;
 }
+
+@media screen and (max-width: 500px) {
+  .card-container {
+    margin: 0.25rem;
+    margin-top: 1rem;
+  }
+}

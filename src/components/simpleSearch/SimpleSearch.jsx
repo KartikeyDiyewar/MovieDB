@@ -8,7 +8,7 @@ const SimpleSearch = () => {
   const dispatch = useDispatch();
 
   return (
-    <span className="search-container">
+    <span className="search-container item1">
       <input
         onChange={(e) => {
           dispatch(setSearch(e.target.value));

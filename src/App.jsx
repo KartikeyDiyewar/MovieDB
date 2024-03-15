@@ -1,14 +1,19 @@
 import React from "react";
-import MovieContainer from "./components/movieContainer/MovieContainer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import MovieCardDetails from "./pages/MovieCardDetails";
 
-import Navbar from "./components/navbar/Navbar";
 import "./App.css";
 
 function App() {
   return (
     <main className="main-container">
-      <Navbar />
-      <MovieContainer />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/moviecard/:movie" element={<MovieCardDetails />} />
+        </Routes>
+      </BrowserRouter>
     </main>
   );
 }
