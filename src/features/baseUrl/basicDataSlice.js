@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { tmdbapi, apiKey } from "../../api/token";
 
 const initialState = {
+  totalData: {},
   urlData: [],
   isData: false,
   searchTerm: "",
@@ -17,7 +18,7 @@ export const fetchMovies = createAsyncThunk(
     const page = thunkAPI.getState().base.currentPage;
     try {
       const response = await tmdbapi.get(`/movie/${type}?page=${page}`);
-      const results = response.data.results;
+      const results = response.data;
       return results;
     } catch (error) {
       console.log(error);
@@ -29,15 +30,16 @@ export const searchMovie = createAsyncThunk(
   "searchMovie",
   async (arg, thunkAPI) => {
     const val = thunkAPI.getState().base.searchTerm;
+    const page = thunkAPI.getState().base.currentPage;
     try {
       if (val == "") {
         alert("Enter the search");
         return Promise.reject();
       }
       const response = await tmdbapi.get(
-        `/search/movie?query=${val}&api_key=${apiKey}`
+        `/search/movie?query=${val}&api_key=${apiKey}&page=${page}`
       );
-      const results = response.data.results;
+      const results = response.data;
       return results;
     } catch (error) {
       console.log(error);
@@ -67,16 +69,22 @@ export const basicDataSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
       if (state.isData && state.currentPage > 1) {
-        state.urlData = [...state.urlData, ...action.payload];
+        state.urlData = [...state.urlData, ...action.payload.results];
         return state;
       }
-      state.urlData = action.payload;
+      state.totalData = action.payload;
+      state.urlData = action.payload.results;
       state.isData = true;
       return state;
     });
     builder
       .addCase(searchMovie.fulfilled, (state, action) => {
-        state.urlData = action.payload;
+        if (state.isData && state.currentPage > 1) {
+          state.urlData = [...state.urlData, ...action.payload.results];
+          return state;
+        }
+        state.totalData = action.payload;
+        state.urlData = action.payload.results;
         state.isData = true;
         return state;
       })

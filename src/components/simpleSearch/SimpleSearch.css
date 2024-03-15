@@ -7,6 +7,10 @@
   color: rgb(63, 63, 63);
 }
 
+#search-holder::placeholder {
+  color: rgb(63, 63, 63);
+}
+
 #search-holder:hover {
   border: 2px solid rgb(18, 23, 23);
 }

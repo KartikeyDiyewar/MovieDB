@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMovies, setPage } from "../../features/baseUrl/basicDataSlice";
+import {
+  fetchMovies,
+  searchMovie,
+  setPage,
+} from "../../features/baseUrl/basicDataSlice";
 import MovieCard from "../movieCard/MovieCard";
 import "./MovieContainer.css";
 import loadingImg from "../../assets/loading.png";
@@ -14,13 +18,13 @@ const MovieContainer = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (isSearch) {
+      return;
+    }
     dispatch(fetchMovies());
   }, [selectTerm, currentPage]);
 
   useEffect(() => {
-    if (isSearch) {
-      return;
-    }
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         console.log(entries);
@@ -45,7 +49,7 @@ const MovieContainer = () => {
           {urlData.map((movie, index) => {
             return (
               <div className="movie-container-item" key={index}>
-                <MovieCard movie={urlData[index]} />
+                <MovieCard movie={movie} />
               </div>
             );
           })}

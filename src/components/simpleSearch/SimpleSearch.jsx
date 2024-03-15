@@ -6,7 +6,6 @@ import { setSearch, searchMovie } from "../../features/baseUrl/basicDataSlice";
 
 const SimpleSearch = () => {
   const dispatch = useDispatch();
-  const { searchTerm } = useSelector((store) => store.base.searchTerm);
 
   return (
     <span className="search-container">

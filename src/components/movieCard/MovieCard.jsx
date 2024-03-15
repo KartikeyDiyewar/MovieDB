@@ -12,7 +12,9 @@ const MovieCard = ({ movie }) => {
       />
       <div className="movie-text-container">
         <h4 className="movie-text">{movie.title}</h4>
-        <h4 className="movie-text">{movie.vote_average.toFixed(2)}</h4>
+        <h4 className="movie-text">
+          <span id="star-code"> &#11088;</span> {movie.vote_average.toFixed(2)}
+        </h4>
       </div>
     </article>
   );
