@@ -23,7 +23,10 @@ const MovieCard = ({ movie }) => {
   return (
     <article
       className="card-container"
-      onClick={() => navigate(`/movie/${movie.id}`)}
+      onClick={() => {
+        const targetId = movie.id || movie.tmdbId;
+        if (targetId) navigate(`/movie/${targetId}`);
+      }}
       title={movie.title}
     >
       <div className="poster-wrapper">

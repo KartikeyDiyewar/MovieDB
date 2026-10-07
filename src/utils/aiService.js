@@ -129,9 +129,11 @@ export async function enrichMovieTitlesWithTmdb(rawTitles) {
         );
         const match = tmdbRes.data?.results?.[0];
         return {
-          title: title,
-          year: match?.release_date ? match.release_date.slice(0, 4) : "",
+          id: match?.id || null,
           tmdbId: match?.id || null,
+          title: title,
+          release_date: match?.release_date || "",
+          year: match?.release_date ? match.release_date.slice(0, 4) : "",
           poster_path: match?.poster_path || null,
           vote_average: match?.vote_average || null,
           overview: match?.overview || null,
@@ -139,9 +141,11 @@ export async function enrichMovieTitlesWithTmdb(rawTitles) {
       } catch (err) {
         console.warn(`TMDB lookup failed for ${title}:`, err);
         return {
-          title: title,
-          year: "",
+          id: null,
           tmdbId: null,
+          title: title,
+          release_date: "",
+          year: "",
           poster_path: null,
           vote_average: null,
         };
