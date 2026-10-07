@@ -1,13 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { tmdbapi } from "../api/token";
+import {
+  toggleWatchlist,
+  setToast,
+  openTrailerModal,
+} from "../features/baseUrl/basicDataSlice";
 import Navbar from "../components/navbar/Navbar";
 import MovieCard from "../components/movieCard/MovieCard";
+import TrailerModal from "../components/trailerModal/TrailerModal";
+import Toast from "../components/toast/Toast";
+import BackToTop from "../components/backToTop/BackToTop";
 import "./MovieCardDetails.css";
 
 const MovieCardDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const watchlist = useSelector((state) => state.base.watchlist);
 
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,10 +29,8 @@ const MovieCardDetails = () => {
     setLoading(true);
     setError(null);
 
-    // Scroll to top upon navigation
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Validate ID: check if it's a numeric ID or fallback
     let movieId = id;
     if (isNaN(movieId)) {
       try {
@@ -51,6 +60,29 @@ const MovieCardDetails = () => {
       isMounted = false;
     };
   }, [id]);
+
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      dispatch(setToast("Link copied to clipboard! 📋"));
+    } else if (navigator.share) {
+      navigator.share({
+        title: movie?.title,
+        url: window.location.href,
+      });
+    }
+  };
+
+  const handlePlayTrailer = (trailerKey) => {
+    if (trailerKey) {
+      dispatch(
+        openTrailerModal({
+          title: movie?.title,
+          videoKey: trailerKey,
+        })
+      );
+    }
+  };
 
   if (loading) {
     return (
@@ -95,13 +127,18 @@ const MovieCardDetails = () => {
     ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
     : null;
 
-  // Find YouTube trailer
   const trailer = movie.videos?.results?.find(
     (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser")
   );
 
-  const topCast = (movie.credits?.cast || []).slice(0, 8);
-  const similarMovies = (movie.similar?.results || []).slice(0, 5);
+  const isSaved = watchlist.some((m) => m.id === movie.id);
+  const topCast = (movie.credits?.cast || []).slice(0, 10);
+  const similarMovies = (movie.similar?.results || []).slice(0, 6);
+
+  const formatCurrency = (val) => {
+    if (!val || val === 0) return null;
+    return `$${(val / 1000000).toFixed(1)}M`;
+  };
 
   return (
     <div className="details-page-wrapper">
@@ -175,10 +212,49 @@ const MovieCardDetails = () => {
                 </div>
               )}
 
+              {/* Action Buttons: Watchlist & Share & Trailer */}
+              <div className="details-actions-bar">
+                {trailer && (
+                  <button
+                    className="action-btn play"
+                    onClick={() => handlePlayTrailer(trailer.key)}
+                  >
+                    ▶ Watch Trailer
+                  </button>
+                )}
+                <button
+                  className={`action-btn watchlist-btn ${isSaved ? "saved" : ""}`}
+                  onClick={() => dispatch(toggleWatchlist(movie))}
+                >
+                  {isSaved ? "❤️ In Watchlist" : "🤍 Add to Watchlist"}
+                </button>
+                <button className="action-btn share-btn" onClick={handleShare}>
+                  🔗 Share
+                </button>
+              </div>
+
               <div className="details-overview-section">
                 <h3>Overview</h3>
                 <p>{movie.overview || "No overview available for this movie."}</p>
               </div>
+
+              {/* Budget & Revenue Meta */}
+              {(movie.budget > 0 || movie.revenue > 0) && (
+                <div className="financials-row">
+                  {movie.budget > 0 && (
+                    <div className="financial-item">
+                      <span className="fin-label">Budget:</span>
+                      <span className="fin-val">{formatCurrency(movie.budget)}</span>
+                    </div>
+                  )}
+                  {movie.revenue > 0 && (
+                    <div className="financial-item">
+                      <span className="fin-label">Revenue:</span>
+                      <span className="fin-val">{formatCurrency(movie.revenue)}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -235,6 +311,10 @@ const MovieCardDetails = () => {
           </div>
         </section>
       )}
+
+      <TrailerModal />
+      <Toast />
+      <BackToTop />
     </div>
   );
 };

@@ -57,6 +57,39 @@
   margin: 0;
 }
 
+/* Watchlist Bookmark Button */
+.card-bookmark-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(15, 15, 20, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+  z-index: 2;
+  padding: 0;
+}
+
+.card-bookmark-btn:hover {
+  transform: scale(1.15);
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.card-bookmark-btn.saved {
+  background: rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+/* Rating Badge */
 .rating-badge {
   position: absolute;
   top: 8px;
@@ -72,6 +105,7 @@
   color: #f59e0b;
   font-size: 0.78rem;
   font-weight: 700;
+  z-index: 2;
 }
 
 .star-icon {

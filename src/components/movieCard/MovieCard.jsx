@@ -1,9 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleWatchlist } from "../../features/baseUrl/basicDataSlice";
 import "./MovieCard.css";
 
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const watchlist = useSelector((state) => state.base.watchlist);
+
   if (!movie) return null;
+
+  const isSaved = watchlist.some((m) => m.id === movie.id);
 
   const imageBasePath = "https://image.tmdb.org/t/p/w500";
   const posterUrl = movie.poster_path
@@ -18,6 +25,11 @@ const MovieCard = ({ movie }) => {
     typeof movie.vote_average === "number" && movie.vote_average > 0
       ? movie.vote_average.toFixed(1)
       : "NR";
+
+  const handleWatchlistClick = (e) => {
+    e.stopPropagation();
+    dispatch(toggleWatchlist(movie));
+  };
 
   return (
     <article
@@ -39,11 +51,23 @@ const MovieCard = ({ movie }) => {
             <p>No Image</p>
           </div>
         )}
+
+        {/* Watchlist Quick Button */}
+        <button
+          className={`card-bookmark-btn ${isSaved ? "saved" : ""}`}
+          onClick={handleWatchlistClick}
+          title={isSaved ? "Remove from Watchlist" : "Add to Watchlist"}
+        >
+          {isSaved ? "❤️" : "🤍"}
+        </button>
+
+        {/* Rating Badge */}
         <div className="rating-badge">
           <span className="star-icon">★</span>
           <span>{rating}</span>
         </div>
       </div>
+
       <div className="movie-text-container">
         <h4 className="movie-title">{movie.title || "Untitled"}</h4>
         <div className="movie-meta">

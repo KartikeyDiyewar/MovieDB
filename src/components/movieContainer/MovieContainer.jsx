@@ -24,6 +24,7 @@ const MovieContainer = () => {
     totalPages,
     mode,
     searchTerm,
+    watchlist,
   } = useSelector((state) => state.base);
 
   const observerRef = useRef(null);
@@ -35,6 +36,9 @@ const MovieContainer = () => {
 
   // Fetch movies when category, genre, or page changes
   useEffect(() => {
+    if (mode === "watchlist") {
+      return;
+    }
     if (mode === "search") {
       if (searchTerm && searchTerm.trim()) {
         dispatch(searchMovie());
@@ -47,7 +51,7 @@ const MovieContainer = () => {
   // Infinite Scroll Observer callback
   const lastMovieRef = useCallback(
     (node) => {
-      if (loading || loadingMore) return;
+      if (mode === "watchlist" || loading || loadingMore) return;
       if (observerRef.current) observerRef.current.disconnect();
 
       observerRef.current = new IntersectionObserver((entries) => {
@@ -58,7 +62,7 @@ const MovieContainer = () => {
 
       if (node) observerRef.current.observe(node);
     },
-    [loading, loadingMore, currentPage, totalPages, dispatch]
+    [mode, loading, loadingMore, currentPage, totalPages, dispatch]
   );
 
   const handleRetry = () => {
@@ -69,8 +73,17 @@ const MovieContainer = () => {
     }
   };
 
+  const displayMovies = mode === "watchlist" ? watchlist : urlData;
+
   return (
     <section className="catalog-section">
+      {mode === "watchlist" && (
+        <div className="section-header">
+          <h2>❤️ Your Watchlist ({watchlist.length})</h2>
+          <p>Movies you saved to watch later.</p>
+        </div>
+      )}
+
       {error && (
         <div className="error-banner">
           <span className="error-icon">⚠️</span>
@@ -84,7 +97,7 @@ const MovieContainer = () => {
         </div>
       )}
 
-      {loading && (
+      {loading && mode !== "watchlist" && (
         <div className="movie-grid">
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
             <div key={i} className="skeleton-card">
@@ -96,11 +109,11 @@ const MovieContainer = () => {
         </div>
       )}
 
-      {!loading && urlData.length > 0 && (
+      {!loading && displayMovies.length > 0 && (
         <>
           <div className="movie-grid">
-            {urlData.map((movie, index) => {
-              const isLast = index === urlData.length - 1;
+            {displayMovies.map((movie, index) => {
+              const isLast = index === displayMovies.length - 1;
               return (
                 <div
                   key={`${movie.id}-${index}`}
@@ -113,25 +126,37 @@ const MovieContainer = () => {
             })}
           </div>
 
-          {loadingMore && (
+          {loadingMore && mode !== "watchlist" && (
             <div className="loading-more-indicator">
               <div className="spinner" />
               <span>Loading more movies...</span>
             </div>
           )}
 
-          {currentPage >= totalPages && totalPages > 1 && (
-            <p className="end-of-results">You have reached the end of the catalog.</p>
-          )}
+          {mode !== "watchlist" &&
+            currentPage >= totalPages &&
+            totalPages > 1 && (
+              <p className="end-of-results">
+                You have reached the end of the catalog.
+              </p>
+            )}
         </>
       )}
 
-      {!loading && !error && urlData.length === 0 && (
+      {!loading && !error && displayMovies.length === 0 && (
         <div className="empty-state">
-          <span className="empty-icon">🔍</span>
-          <h3>No movies found</h3>
+          <span className="empty-icon">
+            {mode === "watchlist" ? "🍿" : "🔍"}
+          </span>
+          <h3>
+            {mode === "watchlist"
+              ? "Your Watchlist is empty"
+              : "No movies found"}
+          </h3>
           <p>
-            {mode === "search"
+            {mode === "watchlist"
+              ? "Tap the heart icon (🤍) on any movie to save it to your Watchlist!"
+              : mode === "search"
               ? `No results matched "${searchTerm}". Try another search term.`
               : "No movies available in this category."}
           </p>

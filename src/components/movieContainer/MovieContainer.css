@@ -6,6 +6,24 @@
   box-sizing: border-box;
 }
 
+.section-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  color: #f8fafc;
+  margin: 0 0 0.3rem;
+}
+
+.section-header p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));

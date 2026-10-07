@@ -1,9 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { tmdbapi } from "../../api/token";
 
+const getSavedWatchlist = () => {
+  try {
+    const saved = localStorage.getItem("kd_watchlist");
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+};
+
 const initialState = {
   totalData: {},
   urlData: [],
+  trending: [],
   isData: false,
   loading: false,
   loadingMore: false,
@@ -12,7 +22,10 @@ const initialState = {
   isSearch: false,
   selectTerm: "popular",
   selectedGenre: null,
-  mode: "category", // "category" | "genre" | "search"
+  mode: "category", // "category" | "genre" | "search" | "watchlist"
+  watchlist: getSavedWatchlist(),
+  toastMessage: null,
+  activeTrailer: null, // { title: string, videoKey: string } | null
   genres: [
     { id: 878, name: "Sci-Fi 🚀" },
     { id: 28, name: "Action 💥" },
@@ -37,6 +50,18 @@ const appendUniqueMovies = (existingList, newResults) => {
   const filteredNew = newResults.filter((m) => m && m.id && !existingIds.has(m.id));
   return [...existingList, ...filteredNew];
 };
+
+export const fetchTrending = createAsyncThunk(
+  "base/fetchTrending",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await tmdbapi.get("/trending/movie/week");
+      return response.data.results.slice(0, 5);
+    } catch (err) {
+      return rejectWithValue(err.message || "Failed to load trending movies");
+    }
+  }
+);
 
 export const fetchGenres = createAsyncThunk(
   "base/fetchGenres",
@@ -118,6 +143,35 @@ export const basicDataSlice = createSlice({
       state.urlData = [];
       state.error = null;
     },
+    setWatchlistMode: (state) => {
+      state.isSearch = false;
+      state.mode = "watchlist";
+      state.selectedGenre = null;
+      state.urlData = state.watchlist;
+      state.isData = true;
+      state.loading = false;
+      state.error = null;
+    },
+    toggleWatchlist: (state, action) => {
+      const movie = action.payload;
+      if (!movie || !movie.id) return;
+      const index = state.watchlist.findIndex((m) => m.id === movie.id);
+      if (index >= 0) {
+        state.watchlist.splice(index, 1);
+        state.toastMessage = `Removed "${movie.title}" from Watchlist`;
+        if (state.mode === "watchlist") {
+          state.urlData = state.watchlist;
+        }
+      } else {
+        state.watchlist.unshift(movie);
+        state.toastMessage = `Added "${movie.title}" to Watchlist ❤️`;
+      }
+      try {
+        localStorage.setItem("kd_watchlist", JSON.stringify(state.watchlist));
+      } catch {
+        // ignore storage errors
+      }
+    },
     clearSearch: (state) => {
       state.isSearch = false;
       state.mode = "category";
@@ -132,13 +186,30 @@ export const basicDataSlice = createSlice({
         state.currentPage += 1;
       }
     },
+    setToast: (state, action) => {
+      state.toastMessage = action.payload;
+    },
+    clearToast: (state) => {
+      state.toastMessage = null;
+    },
+    openTrailerModal: (state, action) => {
+      state.activeTrailer = action.payload;
+    },
+    closeTrailerModal: (state) => {
+      state.activeTrailer = null;
+    },
   },
   extraReducers: (builder) => {
     builder
+      // fetchTrending
+      .addCase(fetchTrending.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.trending = action.payload;
+        }
+      })
       // fetchGenres
       .addCase(fetchGenres.fulfilled, (state, action) => {
         if (action.payload && Array.isArray(action.payload)) {
-          // Merge custom decorated genres with TMDB genres
           const iconMap = {
             878: " 🚀",
             28: " 💥",
@@ -220,7 +291,18 @@ export const basicDataSlice = createSlice({
   },
 });
 
-export const { setSearch, setSelect, setGenre, clearSearch, setPage } =
-  basicDataSlice.actions;
+export const {
+  setSearch,
+  setSelect,
+  setGenre,
+  setWatchlistMode,
+  toggleWatchlist,
+  clearSearch,
+  setPage,
+  setToast,
+  clearToast,
+  openTrailerModal,
+  closeTrailerModal,
+} = basicDataSlice.actions;
 
 export default basicDataSlice.reducer;

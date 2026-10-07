@@ -2,16 +2,26 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import SimpleSearch from "../simpleSearch/SimpleSearch";
 import titleImg from "../../assets/movie.png";
-import { clearSearch } from "../../features/baseUrl/basicDataSlice";
+import {
+  clearSearch,
+  setWatchlistMode,
+} from "../../features/baseUrl/basicDataSlice";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { totalData, isSearch, searchTerm } = useSelector((store) => store.base);
+  const { totalData, isSearch, searchTerm, watchlist, mode } = useSelector(
+    (store) => store.base
+  );
 
   const handleLogoClick = () => {
     dispatch(clearSearch());
+    navigate("/");
+  };
+
+  const handleWatchlistClick = () => {
+    dispatch(setWatchlistMode());
     navigate("/");
   };
 
@@ -27,13 +37,27 @@ const Navbar = () => {
           <SimpleSearch />
         </div>
 
-        {isSearch && totalData.total_results !== undefined && (
-          <div className="navbar-badge">
-            <span>
-              &ldquo;{searchTerm}&rdquo; ({totalData.total_results})
-            </span>
-          </div>
-        )}
+        <div className="navbar-actions">
+          <button
+            className={`navbar-watchlist-btn ${mode === "watchlist" ? "active" : ""}`}
+            onClick={handleWatchlistClick}
+            title="View your saved movies"
+          >
+            <span className="heart-icon">❤️</span>
+            <span className="watchlist-label">Watchlist</span>
+            {watchlist.length > 0 && (
+              <span className="watchlist-count">{watchlist.length}</span>
+            )}
+          </button>
+
+          {isSearch && totalData.total_results !== undefined && (
+            <div className="navbar-badge">
+              <span>
+                &ldquo;{searchTerm}&rdquo; ({totalData.total_results})
+              </span>
+            </div>
+          )}
+        </div>
       </nav>
     </header>
   );
