@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -6,19 +6,42 @@ import {
   openTrailerModal,
 } from "../../features/baseUrl/basicDataSlice";
 import { tmdbapi } from "../../api/token";
-import { getAiMovieRecommendations, AI_PRESETS } from "../../utils/aiService";
+import { chatWithAiAssistant, CHAT_STARTERS } from "../../utils/aiService";
 import "./AiModal.css";
+
+const INITIAL_MESSAGE = {
+  id: "welcome",
+  role: "assistant",
+  text: "Hello. I'm your cinema assistant. Ask me for recommendations, explore specific themes, find where to stream, or ask for more anytime.",
+  movies: [],
+};
 
 const AiModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAiModalOpen } = useSelector((state) => state.base);
 
+  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [inputQuery, setInputQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [result, setResult] = useState(null);
 
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // Auto-scroll to bottom of chat
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (isAiModalOpen) {
+      scrollToBottom();
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [messages, isAiModalOpen, loading]);
+
+  // Escape key to close
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") dispatch(closeAiModal());
@@ -35,26 +58,56 @@ const AiModal = () => {
 
   if (!isAiModalOpen) return null;
 
-  const handleSearch = async (queryToRun) => {
-    const prompt = queryToRun || inputQuery;
-    if (!prompt.trim() || loading) return;
+  const handleSendMessage = async (userPrompt) => {
+    const promptToSend = (userPrompt || inputQuery).trim();
+    if (!promptToSend || loading) return;
 
-    setLoading(true);
+    setInputQuery("");
     setError(null);
 
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      text: promptToSend,
+      movies: [],
+    };
+
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setLoading(true);
+
     try {
-      const data = await getAiMovieRecommendations(prompt);
-      setResult(data);
+      // Build conversation history for Groq
+      const historyPayload = newMessages
+        .filter((m) => m.id !== "welcome")
+        .map((m) => ({
+          role: m.role,
+          content: m.text,
+        }));
+
+      const response = await chatWithAiAssistant(historyPayload);
+
+      const assistantMessage = {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        text: response.message,
+        movies: response.movies || [],
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      setError(err.message || "Failed to generate AI recommendations. Please try again.");
+      setError(
+        err.message || "Failed to generate response. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePresetClick = (presetQuery) => {
-    setInputQuery(presetQuery);
-    handleSearch(presetQuery);
+  const handleResetChat = () => {
+    setMessages([INITIAL_MESSAGE]);
+    setError(null);
+    setInputQuery("");
   };
 
   const handleMovieClick = (tmdbId) => {
@@ -96,203 +149,264 @@ const AiModal = () => {
       onClick={() => dispatch(closeAiModal())}
     >
       <div className="ai-modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
+        {/* Header - Claude/ChatGPT Minimalist Aesthetic */}
         <div className="ai-modal-header">
-          <div className="ai-title-row">
-            <span className="ai-sparkle-icon">✨</span>
-            <div className="ai-title-text">
-              <h3>KD Cinema AI Genie</h3>
-              <span className="ai-powered-by">Powered by Groq High-Speed LLM</span>
+          <div className="ai-header-left">
+            <div className="ai-header-icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+              </svg>
+            </div>
+            <div className="ai-header-titles">
+              <h3>KD Cinema AI</h3>
+              <span className="ai-model-badge">Conversational Assistant</span>
             </div>
           </div>
-          <button
-            className="ai-close-btn"
-            onClick={() => dispatch(closeAiModal())}
-            title="Close"
-          >
-            ✕
-          </button>
+
+          <div className="ai-header-actions">
+            {messages.length > 1 && (
+              <button
+                className="ai-reset-btn"
+                onClick={handleResetChat}
+                title="Start a new conversation thread"
+              >
+                New Chat ↺
+              </button>
+            )}
+            <button
+              className="ai-close-btn"
+              onClick={() => dispatch(closeAiModal())}
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
-        {/* Input Bar */}
-        <div className="ai-search-container">
+        {/* Chat Thread */}
+        <div className="ai-chat-thread">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`ai-message-row ${msg.role === "user" ? "user-row" : "assistant-row"}`}
+            >
+              {msg.role === "assistant" && (
+                <div className="ai-avatar">
+                  <span>AI</span>
+                </div>
+              )}
+
+              <div className="ai-bubble-container">
+                <div className={`ai-message-bubble ${msg.role}`}>
+                  <p className="ai-bubble-text">{msg.text}</p>
+                </div>
+
+                {/* If Assistant recommended movie cards */}
+                {msg.movies && msg.movies.length > 0 && (
+                  <div className="ai-movie-cards-grid">
+                    {msg.movies.map((m, idx) => {
+                      const posterUrl = m.poster_path
+                        ? `https://image.tmdb.org/t/p/w300${m.poster_path}`
+                        : null;
+
+                      return (
+                        <div key={idx} className="ai-chat-card">
+                          <div
+                            className="ai-card-poster-col"
+                            onClick={() => handleMovieClick(m.tmdbId)}
+                          >
+                            {posterUrl ? (
+                              <img
+                                src={posterUrl}
+                                alt={m.title}
+                                className="ai-card-poster"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="ai-card-placeholder">🎬</div>
+                            )}
+                          </div>
+
+                          <div className="ai-card-info-col">
+                            <h5
+                              className="ai-card-title"
+                              onClick={() => handleMovieClick(m.tmdbId)}
+                            >
+                              {m.title}
+                            </h5>
+
+                            <div className="ai-card-meta">
+                              {m.year && <span>{m.year}</span>}
+                              {m.vote_average && (
+                                <span className="ai-card-rating">
+                                  ★ {m.vote_average.toFixed(1)}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="ai-card-actions">
+                              {m.tmdbId ? (
+                                <button
+                                  className="ai-card-btn primary"
+                                  onClick={() => handleMovieClick(m.tmdbId)}
+                                >
+                                  Details 🎬
+                                </button>
+                              ) : (
+                                <a
+                                  href={`https://www.google.com/search?q=${encodeURIComponent(
+                                    m.title + " movie where to watch"
+                                  )}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="ai-card-btn primary"
+                                >
+                                  Search ↗
+                                </a>
+                              )}
+
+                              {m.tmdbId && (
+                                <button
+                                  className="ai-card-btn secondary"
+                                  onClick={() =>
+                                    handleTrailerClick(m.tmdbId, m.title)
+                                  }
+                                >
+                                  ▶ Trailer
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {/* Loading indicator */}
+          {loading && (
+            <div className="ai-message-row assistant-row">
+              <div className="ai-avatar">
+                <span>AI</span>
+              </div>
+              <div className="ai-typing-indicator">
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {error && !loading && (
+            <div className="ai-chat-error">
+              <p>⚠️ {error}</p>
+              <button
+                className="ai-chat-retry-btn"
+                onClick={() => handleSendMessage()}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {/* Quick Starters (shown when chat just began) */}
+          {messages.length === 1 && !loading && (
+            <div className="ai-starters-section">
+              <span className="starters-label">Suggested prompts:</span>
+              <div className="starters-grid">
+                {CHAT_STARTERS.map((starter, i) => (
+                  <button
+                    key={i}
+                    className="starter-chip"
+                    onClick={() => handleSendMessage(starter)}
+                  >
+                    {starter} ➔
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Quick Follow-up chips (shown when assistant has answered) */}
+          {messages.length > 1 && !loading && !error && (
+            <div className="ai-followup-chips">
+              <button
+                className="followup-chip"
+                onClick={() => handleSendMessage("Suggest 3 more different movies")}
+              >
+                + Suggest more
+              </button>
+              <button
+                className="followup-chip"
+                onClick={() => handleSendMessage("Which of these has the best reviews?")}
+              >
+                Which is highest rated?
+              </button>
+              <button
+                className="followup-chip"
+                onClick={() => handleSendMessage("Give me something lighter / comedy")}
+              >
+                Something lighter
+              </button>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Sticky Input Bar */}
+        <div className="ai-input-container">
           <form
-            className="ai-input-form"
+            className="ai-chat-form"
             onSubmit={(e) => {
               e.preventDefault();
-              handleSearch();
+              handleSendMessage();
             }}
           >
             <input
+              ref={inputRef}
               type="text"
-              className="ai-query-input"
-              placeholder="E.g. 'Mind-bending sci-fi with time loops' or 'Romantic movie for rainy evening'..."
+              className="ai-chat-input"
+              placeholder="Ask anything... e.g. 'aur movies batao' or 'films like Dune'..."
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               disabled={loading}
-              autoFocus
             />
             <button
               type="submit"
-              className="ai-submit-btn"
+              className="ai-send-btn"
               disabled={loading || !inputQuery.trim()}
+              title="Send message"
             >
-              {loading ? "Thinking..." : "Ask AI 🚀"}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
             </button>
           </form>
-
-          {/* Quick Preset Chips */}
-          <div className="ai-preset-chips">
-            <span className="chips-label">Try asking:</span>
-            <div className="chips-scroll">
-              {AI_PRESETS.map((p, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  className="preset-chip"
-                  onClick={() => handlePresetClick(p.query)}
-                  disabled={loading}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Body / Results */}
-        <div className="ai-modal-body">
-          {loading && (
-            <div className="ai-loading-state">
-              <div className="ai-spinner" />
-              <p className="ai-loading-text">
-                Consulting cinema intelligence on Groq...
-              </p>
-              <span className="ai-loading-subtext">
-                Analyzing plot dynamics, critic consensus, and streaming catalogs
-              </span>
-            </div>
-          )}
-
-          {error && !loading && (
-            <div className="ai-error-box">
-              <span className="ai-error-icon">⚠️</span>
-              <div>
-                <p className="ai-error-msg">{error}</p>
-                <button
-                  className="ai-retry-btn"
-                  onClick={() => handleSearch()}
-                >
-                  Try Again
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!loading && !error && result && (
-            <div className="ai-results-wrapper">
-              <div className="ai-summary-card">
-                <span className="ai-badge">AI Recommendation</span>
-                <p className="ai-summary-text">{result.summary}</p>
-              </div>
-
-              <div className="ai-movies-list">
-                {result.movies.map((m, idx) => {
-                  const posterUrl = m.poster_path
-                    ? `https://image.tmdb.org/t/p/w185${m.poster_path}`
-                    : null;
-
-                  return (
-                    <div key={idx} className="ai-movie-card">
-                      <div
-                        className="ai-movie-poster-col"
-                        onClick={() => handleMovieClick(m.tmdbId)}
-                      >
-                        {posterUrl ? (
-                          <img
-                            src={posterUrl}
-                            alt={m.title}
-                            className="ai-movie-poster"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="ai-poster-placeholder">🎬</div>
-                        )}
-                      </div>
-
-                      <div className="ai-movie-info-col">
-                        <div className="ai-movie-title-row">
-                          <h4
-                            className="ai-movie-title"
-                            onClick={() => handleMovieClick(m.tmdbId)}
-                          >
-                            {m.title}
-                          </h4>
-                          {m.year && (
-                            <span className="ai-movie-year">({m.year})</span>
-                          )}
-                          {m.vote_average && (
-                            <span className="ai-rating-pill">
-                              ★ {m.vote_average.toFixed(1)}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="ai-movie-reason-box">
-                          <span className="reason-label">Why this fits:</span>
-                          <p className="reason-text">{m.reason}</p>
-                        </div>
-
-                        <div className="ai-movie-actions">
-                          {m.tmdbId ? (
-                            <button
-                              className="ai-action-btn primary"
-                              onClick={() => handleMovieClick(m.tmdbId)}
-                            >
-                              Stream & Details 🎬
-                            </button>
-                          ) : (
-                            <a
-                              href={`https://www.google.com/search?q=${encodeURIComponent(
-                                m.title + " movie where to watch"
-                              )}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="ai-action-btn primary"
-                            >
-                              Search Movie ↗
-                            </a>
-                          )}
-
-                          {m.tmdbId && (
-                            <button
-                              className="ai-action-btn secondary"
-                              onClick={() =>
-                                handleTrailerClick(m.tmdbId, m.title)
-                              }
-                            >
-                              ▶ Trailer
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {!loading && !result && !error && (
-            <div className="ai-empty-state">
-              <span className="empty-icon">🍿</span>
-              <h4>What are you in the mood for?</h4>
-              <p>
-                Describe any vibe, plot twist, actor, or genre. Our Groq AI
-                scours cinema history to pick the perfect films for you.
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>

@@ -1,15 +1,15 @@
 .ai-breakdown-card {
-  background: linear-gradient(135deg, rgba(34, 38, 50, 0.95), rgba(42, 48, 64, 0.85));
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   border-radius: 14px;
   padding: 1.15rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--card-shadow);
   transition: border-color 0.2s ease;
 }
 
 .ai-breakdown-card:hover {
-  border-color: rgba(139, 92, 246, 0.55);
+  border-color: var(--accent-primary);
 }
 
 .ai-breakdown-header {
@@ -25,55 +25,62 @@
   gap: 10px;
 }
 
-.ai-wand-icon {
-  font-size: 1.4rem;
+.ai-critic-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
   flex-shrink: 0;
 }
 
 .ai-breakdown-titles h4 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--text-primary);
 }
 
 .ai-critic-tag {
-  font-size: 0.75rem;
-  color: #c084fc;
-  font-weight: 600;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .ai-breakdown-toggle-btn {
-  background: linear-gradient(135deg, #7c3aed, #6366f1);
-  color: #ffffff;
-  border: none;
-  padding: 0.5rem 1.1rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 0.45rem 1rem;
   border-radius: 9999px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
   flex-shrink: 0;
 }
 
 .ai-breakdown-toggle-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #9333ea, #818cf8);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.45);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .ai-breakdown-toggle-btn.active {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: none;
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-strong);
 }
 
 .ai-breakdown-content {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border-subtle);
   animation: fadeIn 0.25s ease-out;
 }
 
@@ -82,15 +89,15 @@
   align-items: center;
   gap: 12px;
   padding: 1rem 0;
-  color: #cbd5e1;
-  font-size: 0.88rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
 .breakdown-spinner {
-  width: 22px;
-  height: 22px;
-  border: 2px solid rgba(139, 92, 246, 0.2);
-  border-top-color: #a855f7;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   flex-shrink: 0;
@@ -128,9 +135,9 @@
 }
 
 .breakdown-label {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #c084fc;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -144,31 +151,31 @@
 }
 
 .vibe-tag-pill {
-  background: rgba(139, 92, 246, 0.18);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  color: #e0e7ff;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
   padding: 3px 10px;
   border-radius: 9999px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 
 .breakdown-text {
   margin: 0;
   font-size: 0.88rem;
-  color: #cbd5e1;
+  color: var(--text-primary);
   line-height: 1.5;
 }
 
 .trivia-section {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--bg-surface-elevated);
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
-  border: 1px dashed rgba(139, 92, 246, 0.25);
+  border: 1px solid var(--border-subtle);
 }
 
 .trivia-text {
-  color: #f1f5f9;
+  color: var(--text-secondary);
   font-style: italic;
 }
 

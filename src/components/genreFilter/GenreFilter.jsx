@@ -161,16 +161,16 @@ const GenreFilter = () => {
       <div
         className="ai-discovery-shortcut"
         onClick={() => dispatch(openAiModal())}
-        title="Open KD Cinema AI Genie"
+        title="Open KD Cinema AI"
       >
         <div className="ai-discovery-text">
-          <span className="ai-discovery-sparkle">✨</span>
+          <span className="ai-discovery-badge">AI</span>
           <span>
-            <strong>KD Cinema AI:</strong> Can&apos;t decide? Ask for any mood,
-            vibe, or plot twist...
+            <strong>Cinema Assistant:</strong> Can&apos;t decide what to watch?
+            Chat with our AI for recommendations, vibes, and streaming...
           </span>
         </div>
-        <span className="ai-discovery-arrow">Ask AI ➔</span>
+        <span className="ai-discovery-arrow">Start Chat ➔</span>
       </div>
     </div>
   );

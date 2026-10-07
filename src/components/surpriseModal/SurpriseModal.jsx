@@ -88,7 +88,7 @@ const SurpriseModal = () => {
       >
         <div className="surprise-modal-header">
           <div className="surprise-title-tag">
-            <span>🎲</span> KD Moviez Wheel of Fortune
+            <span>🎲</span> Curated Surprise Recommendation
           </div>
           <button
             className="surprise-close-btn"
@@ -101,7 +101,7 @@ const SurpriseModal = () => {
         {!surpriseMovie ? (
           <div className="surprise-loading">
             <div className="surprise-spinner" />
-            <p>Rolling the dice for a 7+ ⭐ hidden gem...</p>
+            <p>Finding a top-rated 7.0+ hidden gem...</p>
           </div>
         ) : (
           <div className="surprise-body">
@@ -118,7 +118,7 @@ const SurpriseModal = () => {
             </div>
 
             <div className="surprise-info-col">
-              <span className="surprise-pick-badge">✨ Tonight&apos;s Pick</span>
+              <span className="surprise-pick-badge">Curated Pick</span>
               <h2 className="surprise-movie-title">{surpriseMovie.title}</h2>
 
               <div className="surprise-meta">

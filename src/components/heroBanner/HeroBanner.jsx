@@ -112,9 +112,22 @@ const HeroBanner = () => {
           <button
             className="hero-btn ai-btn"
             onClick={() => dispatch(openAiModal())}
-            title="Ask KD Cinema AI for personalized recommendations"
+            title="Ask KD Cinema AI for movie recommendations"
           >
-            ✨ Ask AI What to Watch
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+            </svg>
+            Ask Cinema AI
           </button>
         </div>
 

@@ -267,32 +267,38 @@
     rgba(99, 102, 241, 0.22),
     rgba(168, 85, 247, 0.25)
   );
-  border-color: #a855f7;
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+  box-shadow: 0 4px 16px var(--accent-glow);
 }
 
 .ai-discovery-text {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.84rem;
-  color: #cbd5e1;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
 .ai-discovery-text strong {
-  color: #e0e7ff;
+  color: var(--text-primary);
 }
 
-.ai-discovery-sparkle {
-  font-size: 1.05rem;
+.ai-discovery-badge {
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
   flex-shrink: 0;
 }
 
 .ai-discovery-arrow {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #a855f7;
+  color: var(--accent-primary);
   white-space: nowrap;
   flex-shrink: 0;
   transition: transform 0.2s ease;
@@ -300,7 +306,6 @@
 
 .ai-discovery-shortcut:hover .ai-discovery-arrow {
   transform: translateX(3px);
-  color: #c084fc;
 }
 
 @media screen and (max-width: 640px) {

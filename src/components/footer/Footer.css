@@ -1,10 +1,11 @@
 .site-footer {
   width: 100%;
-  background: #14161d;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
   margin-top: 4rem;
   padding: 3rem 1.25rem 2.5rem;
   box-sizing: border-box;
+  transition: background 0.2s ease;
 }
 
 .footer-container {
@@ -17,15 +18,15 @@
 
 /* Community Alert Bar */
 .footer-community-card {
-  background: linear-gradient(135deg, #1e2330 0%, #282f42 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
   border-radius: 16px;
   padding: 1.25rem 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--card-shadow);
 }
 
 .community-info {
@@ -41,14 +42,14 @@
 .community-info h4 {
   margin: 0;
   font-size: 1.05rem;
-  color: #f3f4f6;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
 .community-info p {
   margin: 0.25rem 0 0;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -61,12 +62,12 @@
   font-weight: 700;
   white-space: nowrap;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
-  box-shadow: 0 4px 14px rgba(0, 136, 204, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 136, 204, 0.35);
 }
 
 .community-join-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 136, 204, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
 }
 
 /* Main Grid */
@@ -79,11 +80,11 @@
 .footer-brand-title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #f3f4f6;
+  color: var(--text-primary);
 }
 
 .footer-tagline {
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.88rem;
   line-height: 1.5;
   margin: 0.6rem 0 1rem;
@@ -93,9 +94,9 @@
 .coffee-btn {
   display: inline-flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #e2e8f0;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
   padding: 0.45rem 1rem;
   border-radius: 9999px;
   font-size: 0.82rem;
@@ -104,14 +105,13 @@
 }
 
 .coffee-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: var(--border-strong);
   transform: translateY(-1px);
 }
 
 .footer-links-col h5 {
   font-size: 0.95rem;
-  color: #f3f4f6;
+  color: var(--text-primary);
   margin: 0 0 0.85rem;
   font-weight: 700;
 }
@@ -126,18 +126,18 @@
 }
 
 .footer-links-col li a {
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   transition: color 0.2s ease;
 }
 
 .footer-links-col li a:hover {
-  color: #818cf8;
+  color: var(--accent-primary);
 }
 
 /* Bottom Bar */
 .footer-bottom-bar {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--border-subtle);
   padding-top: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -147,7 +147,7 @@
 .tmdb-attribution,
 .affiliate-disclosure {
   font-size: 0.76rem;
-  color: #64748b;
+  color: var(--text-muted);
   line-height: 1.5;
   margin: 0;
 }
@@ -155,7 +155,7 @@
 .footer-copyright-row {
   margin-top: 0.5rem;
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 @media screen and (max-width: 768px) {
