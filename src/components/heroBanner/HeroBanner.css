@@ -156,6 +156,21 @@
   transform: translateY(-2px);
 }
 
+.hero-btn.ai-btn {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4));
+  color: #f8fafc;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+}
+
+.hero-btn.ai-btn:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(99, 102, 241, 0.6));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+  border-color: #c084fc;
+}
+
 /* Dots */
 .hero-dots {
   display: flex;

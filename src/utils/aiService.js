@@ -155,3 +155,105 @@ Respond STRICTLY with valid JSON following this exact schema:
     movies: augmentedMovies,
   };
 }
+
+/**
+ * Generate AI Vibe, audience match, and trivia for a specific movie
+ */
+export async function getAiMovieBreakdown(movieTitle, releaseYear = "") {
+  if (!movieTitle) {
+    throw new Error("Movie title is required");
+  }
+
+  if (!GROQ_API_KEY) {
+    throw new Error(
+      "Groq API key is not configured. Please add VITE_GROQ_API_KEY in your Vercel Environment Variables."
+    );
+  }
+
+  const systemPrompt = `You are KD Moviez AI Cinema Critic. For the given movie, provide:
+1. "vibe": an array of exactly 3 punchy, evocative words describing the mood/tone (e.g. ["Hypnotic", "Kinetic", "Mind-Bending"]).
+2. "targetAudience": 1 concise sentence describing who will love this movie.
+3. "watchMood": 1 sentence describing the perfect setting, mood, or snack pairing for this watch.
+4. "trivia": 1 fascinating, verified behind-the-scenes production fact or trivia.
+Respond STRICTLY with valid JSON matching this schema:
+{
+  "vibe": ["Word1", "Word2", "Word3"],
+  "targetAudience": "...",
+  "watchMood": "...",
+  "trivia": "..."
+}`;
+
+  const userContent = `Movie: ${movieTitle} ${releaseYear ? `(${releaseYear})` : ""}`;
+
+  const endpoints = [
+    "/api/groq/chat/completions",
+    "https://api.groq.com/openai/v1/chat/completions",
+  ];
+
+  let aiResponseText = "";
+  let lastError = null;
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "qwen/qwen3.8-27b",
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userContent },
+          ],
+          temperature: 0.6,
+        }),
+      });
+
+      if (!response.ok) {
+        const errBody = await response.text();
+        throw new Error(`Groq API returned ${response.status}: ${errBody}`);
+      }
+
+      const data = await response.json();
+      aiResponseText = data.choices?.[0]?.message?.content || "";
+      if (aiResponseText) break;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  if (!aiResponseText) {
+    throw new Error(
+      lastError?.message || "Failed to generate AI movie breakdown."
+    );
+  }
+
+  let parsed = null;
+  try {
+    parsed = JSON.parse(aiResponseText);
+  } catch {
+    const match = aiResponseText.match(/\{[\s\S]*\}/);
+    if (match) {
+      parsed = JSON.parse(match[0]);
+    } else {
+      throw new Error("Could not parse AI response.");
+    }
+  }
+
+  return {
+    vibe: Array.isArray(parsed.vibe)
+      ? parsed.vibe
+      : ["Cinematic", "Engaging", "Memorable"],
+    targetAudience:
+      parsed.targetAudience ||
+      "Fans of compelling cinema and strong storytelling.",
+    watchMood:
+      parsed.watchMood ||
+      "Dim the lights and enjoy with your favorite snack.",
+    trivia:
+      parsed.trivia || "A standout work in modern cinematic storytelling.",
+  };
+}

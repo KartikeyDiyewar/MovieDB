@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   fetchTrending,
   openTrailerModal,
+  openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
 import { tmdbapi } from "../../api/token";
 import "./HeroBanner.css";
@@ -107,6 +108,13 @@ const HeroBanner = () => {
             onClick={() => navigate(`/movie/${movie.id}`)}
           >
             ℹ Details & Streaming
+          </button>
+          <button
+            className="hero-btn ai-btn"
+            onClick={() => dispatch(openAiModal())}
+            title="Ask KD Cinema AI for personalized recommendations"
+          >
+            ✨ Ask AI What to Watch
           </button>
         </div>
 

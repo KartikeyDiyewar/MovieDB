@@ -5,6 +5,7 @@ import {
   setSelect,
   setMinRating,
   setYearEra,
+  openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
 import "./GenreFilter.css";
 
@@ -154,6 +155,22 @@ const GenreFilter = () => {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* AI Cinema Prompt Shortcut */}
+      <div
+        className="ai-discovery-shortcut"
+        onClick={() => dispatch(openAiModal())}
+        title="Open KD Cinema AI Genie"
+      >
+        <div className="ai-discovery-text">
+          <span className="ai-discovery-sparkle">✨</span>
+          <span>
+            <strong>KD Cinema AI:</strong> Can&apos;t decide? Ask for any mood,
+            vibe, or plot twist...
+          </span>
+        </div>
+        <span className="ai-discovery-arrow">Ask AI ➔</span>
       </div>
     </div>
   );

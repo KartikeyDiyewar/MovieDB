@@ -13,6 +13,7 @@ import Footer from "../components/footer/Footer";
 import TrailerModal from "../components/trailerModal/TrailerModal";
 import SurpriseModal from "../components/surpriseModal/SurpriseModal";
 import AiModal from "../components/aiModal/AiModal";
+import AiMovieBreakdown from "../components/aiBreakdown/AiMovieBreakdown";
 import Toast from "../components/toast/Toast";
 import BackToTop from "../components/backToTop/BackToTop";
 import {
@@ -310,6 +311,12 @@ const MovieCardDetails = () => {
                   🔗 Share
                 </button>
               </div>
+
+              {/* AI Vibe Check & Instant Critic Breakdown */}
+              <AiMovieBreakdown
+                movieTitle={movie.title}
+                releaseYear={releaseYear}
+              />
 
               {/* Where to Watch / OTT Providers Section */}
               <div className="ott-providers-card">
