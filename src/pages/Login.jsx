@@ -380,6 +380,8 @@ const Login = () => {
                 </label>
                 <div className="phone-input-row">
                   <select
+                    id="country-code"
+                    name="countryCode"
                     className="country-code-select"
                     value={countryCode}
                     onChange={(e) => setCountryCode(e.target.value)}
@@ -519,8 +521,10 @@ const Login = () => {
 
             {/* Remember Me Checkbox */}
             <div className="form-meta-row">
-              <label className="remember-checkbox-label">
+              <label htmlFor="remember-me" className="remember-checkbox-label">
                 <input
+                  id="remember-me"
+                  name="rememberMe"
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
