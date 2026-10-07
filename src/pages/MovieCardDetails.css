@@ -197,7 +197,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .action-btn {
@@ -224,20 +224,16 @@
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
 }
 
-.action-btn.watchlist-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f1f5f9;
-}
-
-.action-btn.watchlist-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.action-btn.watchlist-btn.saved {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.5);
+.action-btn.review-btn {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.35);
   color: #fca5a5;
+}
+
+.action-btn.review-btn:hover {
+  background: rgba(220, 38, 38, 0.28);
+  transform: translateY(-2px);
+  color: #fee2e2;
 }
 
 .action-btn.share-btn {
@@ -248,6 +244,107 @@
 
 .action-btn.share-btn:hover {
   background: rgba(255, 255, 255, 0.16);
+}
+
+/* Where to Stream OTT Card */
+.ott-providers-card {
+  background: rgba(26, 26, 38, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ott-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ott-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.ott-platform-list {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ott-type-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.ott-logos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.provider-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.provider-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  object-fit: cover;
+}
+
+.provider-name {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  max-width: 60px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-stream-msg {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.ott-secondary-list {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.5rem;
+}
+
+.ott-logos-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.provider-logo-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .details-overview-section h3 {

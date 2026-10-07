@@ -2,9 +2,12 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1.25rem;
   box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .genre-filter-container {
@@ -13,7 +16,7 @@
   gap: 0.6rem;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -67,4 +70,60 @@
   border-color: #818cf8;
   box-shadow: 0 0 14px rgba(99, 102, 241, 0.45);
   font-weight: 600;
+}
+
+/* Sub-Filters: Rating & Era */
+.sub-filters-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.filter-group-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 2px;
+}
+
+.filter-tag {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+}
+
+.filter-tag.selected {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+  color: #c7d2fe;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 640px) {
+  .sub-filters-container {
+    gap: 0.75rem;
+  }
 }

@@ -1,15 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { tmdbapi } from "../../api/token";
 
-const getSavedWatchlist = () => {
-  try {
-    const saved = localStorage.getItem("kd_watchlist");
-    return saved ? JSON.parse(saved) : [];
-  } catch {
-    return [];
-  }
-};
-
 const initialState = {
   totalData: {},
   urlData: [],
@@ -22,10 +13,13 @@ const initialState = {
   isSearch: false,
   selectTerm: "popular",
   selectedGenre: null,
-  mode: "category", // "category" | "genre" | "search" | "watchlist"
-  watchlist: getSavedWatchlist(),
+  minRating: 0, // 0 | 7 | 8
+  yearEra: "all", // "all" | "recent" | "2010s" | "classic"
+  mode: "category", // "category" | "genre" | "search"
   toastMessage: null,
   activeTrailer: null, // { title: string, videoKey: string } | null
+  surpriseMovie: null,
+  isSurpriseOpen: false,
   genres: [
     { id: 878, name: "Sci-Fi 🚀" },
     { id: 28, name: "Action 💥" },
@@ -75,17 +69,66 @@ export const fetchGenres = createAsyncThunk(
   }
 );
 
+export const fetchSurpriseMovie = createAsyncThunk(
+  "base/fetchSurpriseMovie",
+  async (_, { getState, rejectWithValue }) => {
+    const { selectedGenre } = getState().base;
+    try {
+      const randomPage = Math.floor(Math.random() * 5) + 1;
+      let endpoint = `/discover/movie?sort_by=popularity.desc&vote_average.gte=7.2&vote_count.gte=300&page=${randomPage}`;
+      if (selectedGenre) {
+        endpoint += `&with_genres=${selectedGenre}`;
+      }
+      const response = await tmdbapi.get(endpoint);
+      const results = response.data.results || [];
+      if (results.length > 0) {
+        const randomIndex = Math.floor(Math.random() * results.length);
+        return results[randomIndex];
+      }
+      return null;
+    } catch (error) {
+      return rejectWithValue(error.message || "Failed to find surprise movie");
+    }
+  }
+);
+
 export const fetchMovies = createAsyncThunk(
   "base/fetchMovies",
   async (_, { getState, rejectWithValue }) => {
-    const { selectTerm, selectedGenre, currentPage, mode } = getState().base;
+    const { selectTerm, selectedGenre, currentPage, mode, minRating, yearEra } =
+      getState().base;
     try {
       let endpoint = "";
-      if (mode === "genre" && selectedGenre) {
-        endpoint = `/discover/movie?with_genres=${selectedGenre}&sort_by=popularity.desc&page=${currentPage}`;
+      const hasCustomFilters = minRating > 0 || yearEra !== "all";
+
+      if (mode === "genre" || hasCustomFilters) {
+        let params = [`page=${currentPage}`, "vote_count.gte=80"];
+
+        if (selectedGenre) {
+          params.push(`with_genres=${selectedGenre}`);
+        }
+
+        if (minRating > 0) {
+          params.push(`vote_average.gte=${minRating}`);
+          params.push("sort_by=vote_average.desc");
+        } else {
+          params.push("sort_by=popularity.desc");
+        }
+
+        if (yearEra === "recent") {
+          params.push("primary_release_date.gte=2024-01-01");
+        } else if (yearEra === "2010s") {
+          params.push("primary_release_date.gte=2010-01-01");
+          params.push("primary_release_date.lte=2019-12-31");
+        } else if (yearEra === "classic") {
+          params.push("primary_release_date.lte=2009-12-31");
+        }
+
+        endpoint = `/discover/movie?${params.join("&")}`;
       } else {
         endpoint = `/movie/${selectTerm}?page=${currentPage}`;
       }
+
       const response = await tmdbapi.get(endpoint);
       return response.data;
     } catch (error) {
@@ -143,34 +186,17 @@ export const basicDataSlice = createSlice({
       state.urlData = [];
       state.error = null;
     },
-    setWatchlistMode: (state) => {
-      state.isSearch = false;
-      state.mode = "watchlist";
-      state.selectedGenre = null;
-      state.urlData = state.watchlist;
-      state.isData = true;
-      state.loading = false;
-      state.error = null;
+    setMinRating: (state, action) => {
+      state.minRating = action.payload;
+      state.currentPage = 1;
+      state.urlData = [];
+      state.isData = false;
     },
-    toggleWatchlist: (state, action) => {
-      const movie = action.payload;
-      if (!movie || !movie.id) return;
-      const index = state.watchlist.findIndex((m) => m.id === movie.id);
-      if (index >= 0) {
-        state.watchlist.splice(index, 1);
-        state.toastMessage = `Removed "${movie.title}" from Watchlist`;
-        if (state.mode === "watchlist") {
-          state.urlData = state.watchlist;
-        }
-      } else {
-        state.watchlist.unshift(movie);
-        state.toastMessage = `Added "${movie.title}" to Watchlist ❤️`;
-      }
-      try {
-        localStorage.setItem("kd_watchlist", JSON.stringify(state.watchlist));
-      } catch {
-        // ignore storage errors
-      }
+    setYearEra: (state, action) => {
+      state.yearEra = action.payload;
+      state.currentPage = 1;
+      state.urlData = [];
+      state.isData = false;
     },
     clearSearch: (state) => {
       state.isSearch = false;
@@ -197,6 +223,13 @@ export const basicDataSlice = createSlice({
     },
     closeTrailerModal: (state) => {
       state.activeTrailer = null;
+    },
+    openSurpriseModal: (state) => {
+      state.isSurpriseOpen = true;
+    },
+    closeSurpriseModal: (state) => {
+      state.isSurpriseOpen = false;
+      state.surpriseMovie = null;
     },
   },
   extraReducers: (builder) => {
@@ -229,6 +262,10 @@ export const basicDataSlice = createSlice({
             name: `${g.name}${iconMap[g.id] || ""}`,
           }));
         }
+      })
+      // fetchSurpriseMovie
+      .addCase(fetchSurpriseMovie.fulfilled, (state, action) => {
+        state.surpriseMovie = action.payload;
       })
       // fetchMovies
       .addCase(fetchMovies.pending, (state) => {
@@ -295,14 +332,16 @@ export const {
   setSearch,
   setSelect,
   setGenre,
-  setWatchlistMode,
-  toggleWatchlist,
+  setMinRating,
+  setYearEra,
   clearSearch,
   setPage,
   setToast,
   clearToast,
   openTrailerModal,
   closeTrailerModal,
+  openSurpriseModal,
+  closeSurpriseModal,
 } = basicDataSlice.actions;
 
 export default basicDataSlice.reducer;

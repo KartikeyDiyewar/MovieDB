@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import {
   fetchTrending,
   openTrailerModal,
-  toggleWatchlist,
 } from "../../features/baseUrl/basicDataSlice";
 import { tmdbapi } from "../../api/token";
 import "./HeroBanner.css";
@@ -12,7 +11,7 @@ import "./HeroBanner.css";
 const HeroBanner = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trending, mode, watchlist } = useSelector((state) => state.base);
+  const { trending, mode } = useSelector((state) => state.base);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -45,15 +44,14 @@ const HeroBanner = () => {
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
     : null;
 
-  const isSaved = watchlist.some((m) => m.id === movie.id);
-
   const handlePlayTrailer = async () => {
     try {
       const res = await tmdbapi.get(`/movie/${movie.id}/videos`);
       const videos = res.data.results || [];
-      const trailer = videos.find(
-        (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser")
-      ) || videos[0];
+      const trailer =
+        videos.find(
+          (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser")
+        ) || videos[0];
 
       if (trailer) {
         dispatch(
@@ -108,14 +106,7 @@ const HeroBanner = () => {
             className="hero-btn secondary"
             onClick={() => navigate(`/movie/${movie.id}`)}
           >
-            ℹ Details
-          </button>
-          <button
-            className={`hero-btn icon ${isSaved ? "saved" : ""}`}
-            onClick={() => dispatch(toggleWatchlist(movie))}
-            title={isSaved ? "Remove from Watchlist" : "Add to Watchlist"}
-          >
-            {isSaved ? "❤️ Saved" : "🤍 Watchlist"}
+            ℹ Details & Streaming
           </button>
         </div>
 

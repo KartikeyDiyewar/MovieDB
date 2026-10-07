@@ -4,14 +4,14 @@ import SimpleSearch from "../simpleSearch/SimpleSearch";
 import titleImg from "../../assets/movie.png";
 import {
   clearSearch,
-  setWatchlistMode,
+  openSurpriseModal,
 } from "../../features/baseUrl/basicDataSlice";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { totalData, isSearch, searchTerm, watchlist, mode } = useSelector(
+  const { totalData, isSearch, searchTerm } = useSelector(
     (store) => store.base
   );
 
@@ -20,9 +20,8 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleWatchlistClick = () => {
-    dispatch(setWatchlistMode());
-    navigate("/");
+  const handleSurpriseClick = () => {
+    dispatch(openSurpriseModal());
   };
 
   return (
@@ -39,15 +38,12 @@ const Navbar = () => {
 
         <div className="navbar-actions">
           <button
-            className={`navbar-watchlist-btn ${mode === "watchlist" ? "active" : ""}`}
-            onClick={handleWatchlistClick}
-            title="View your saved movies"
+            className="navbar-surprise-btn"
+            onClick={handleSurpriseClick}
+            title="Pick a random high-rated movie for me"
           >
-            <span className="heart-icon">❤️</span>
-            <span className="watchlist-label">Watchlist</span>
-            {watchlist.length > 0 && (
-              <span className="watchlist-count">{watchlist.length}</span>
-            )}
+            <span className="dice-icon">🎲</span>
+            <span className="surprise-label">Surprise Me</span>
           </button>
 
           {isSearch && totalData.total_results !== undefined && (

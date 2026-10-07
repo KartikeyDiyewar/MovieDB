@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { tmdbapi } from "../api/token";
 import {
-  toggleWatchlist,
   setToast,
   openTrailerModal,
 } from "../features/baseUrl/basicDataSlice";
 import Navbar from "../components/navbar/Navbar";
 import MovieCard from "../components/movieCard/MovieCard";
 import TrailerModal from "../components/trailerModal/TrailerModal";
+import SurpriseModal from "../components/surpriseModal/SurpriseModal";
 import Toast from "../components/toast/Toast";
 import BackToTop from "../components/backToTop/BackToTop";
 import "./MovieCardDetails.css";
@@ -18,9 +18,9 @@ const MovieCardDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const watchlist = useSelector((state) => state.base.watchlist);
 
   const [movie, setMovie] = useState(null);
+  const [providers, setProviders] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,6 +28,7 @@ const MovieCardDetails = () => {
     let isMounted = true;
     setLoading(true);
     setError(null);
+    setProviders(null);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -41,11 +42,16 @@ const MovieCardDetails = () => {
       }
     }
 
-    tmdbapi
-      .get(`/movie/${movieId}?append_to_response=videos,credits,similar`)
-      .then((res) => {
+    Promise.all([
+      tmdbapi.get(`/movie/${movieId}?append_to_response=videos,credits,similar`),
+      tmdbapi.get(`/movie/${movieId}/watch/providers`).catch(() => null),
+    ])
+      .then(([movieRes, provRes]) => {
         if (isMounted) {
-          setMovie(res.data);
+          setMovie(movieRes.data);
+          if (provRes && provRes.data) {
+            setProviders(provRes.data.results || {});
+          }
           setLoading(false);
         }
       })
@@ -84,13 +90,19 @@ const MovieCardDetails = () => {
     }
   };
 
+  const handleOpenReviews = () => {
+    if (!movie?.title) return;
+    const query = encodeURIComponent(`${movie.title} movie review`);
+    window.open(`https://www.youtube.com/results?search_query=${query}`, "_blank");
+  };
+
   if (loading) {
     return (
       <div className="details-page-wrapper">
         <Navbar />
         <div className="details-loading">
           <div className="details-spinner" />
-          <p>Loading movie details...</p>
+          <p>Loading movie details & streaming providers...</p>
         </div>
       </div>
     );
@@ -131,7 +143,6 @@ const MovieCardDetails = () => {
     (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser")
   );
 
-  const isSaved = watchlist.some((m) => m.id === movie.id);
   const topCast = (movie.credits?.cast || []).slice(0, 10);
   const similarMovies = (movie.similar?.results || []).slice(0, 6);
 
@@ -139,6 +150,13 @@ const MovieCardDetails = () => {
     if (!val || val === 0) return null;
     return `$${(val / 1000000).toFixed(1)}M`;
   };
+
+  // Watch providers: India (IN) priority, fallback to US
+  const regionProviders = (providers && providers.IN) || (providers && providers.US) || {};
+  const streamList = regionProviders.flatrate || [];
+  const rentList = regionProviders.rent || [];
+  const buyList = regionProviders.buy || [];
+  const regionCode = providers?.IN ? "India 🇮🇳" : providers?.US ? "USA 🇺🇸" : "Region";
 
   return (
     <div className="details-page-wrapper">
@@ -212,7 +230,7 @@ const MovieCardDetails = () => {
                 </div>
               )}
 
-              {/* Action Buttons: Watchlist & Share & Trailer */}
+              {/* Action Tools Bar */}
               <div className="details-actions-bar">
                 {trailer && (
                   <button
@@ -223,14 +241,75 @@ const MovieCardDetails = () => {
                   </button>
                 )}
                 <button
-                  className={`action-btn watchlist-btn ${isSaved ? "saved" : ""}`}
-                  onClick={() => dispatch(toggleWatchlist(movie))}
+                  className="action-btn review-btn"
+                  onClick={handleOpenReviews}
+                  title="Search movie reviews and video breakdowns on YouTube"
                 >
-                  {isSaved ? "❤️ In Watchlist" : "🤍 Add to Watchlist"}
+                  📺 Reviews on YouTube ↗
                 </button>
                 <button className="action-btn share-btn" onClick={handleShare}>
                   🔗 Share
                 </button>
+              </div>
+
+              {/* Where to Watch / OTT Providers Section */}
+              <div className="ott-providers-card">
+                <div className="ott-header">
+                  <span className="ott-icon">📺</span>
+                  <h4>Where to Stream ({regionCode})</h4>
+                </div>
+
+                {streamList.length > 0 ? (
+                  <div className="ott-platform-list">
+                    <span className="ott-type-label">Subscription:</span>
+                    <div className="ott-logos">
+                      {streamList.map((p) => (
+                        <div
+                          key={p.provider_id}
+                          className="provider-item"
+                          title={p.provider_name}
+                        >
+                          <img
+                            src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                            alt={p.provider_name}
+                            className="provider-logo"
+                          />
+                          <span className="provider-name">{p.provider_name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="no-stream-msg">
+                    Not currently streaming on subscription OTT in {regionCode}.
+                    {rentList.length > 0 || buyList.length > 0
+                      ? " Available for digital rent/purchase."
+                      : ""}
+                  </p>
+                )}
+
+                {(rentList.length > 0 || buyList.length > 0) && (
+                  <div className="ott-secondary-list">
+                    <span className="ott-type-label">Rent / Buy:</span>
+                    <div className="ott-logos-small">
+                      {[...rentList, ...buyList]
+                        .filter(
+                          (v, i, a) =>
+                            a.findIndex((t) => t.provider_id === v.provider_id) === i
+                        )
+                        .slice(0, 6)
+                        .map((p) => (
+                          <img
+                            key={p.provider_id}
+                            src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                            alt={p.provider_name}
+                            title={p.provider_name}
+                            className="provider-logo-small"
+                          />
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="details-overview-section">
@@ -313,6 +392,7 @@ const MovieCardDetails = () => {
       )}
 
       <TrailerModal />
+      <SurpriseModal />
       <Toast />
       <BackToTop />
     </div>

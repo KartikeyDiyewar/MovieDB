@@ -62,47 +62,37 @@
   gap: 0.75rem;
 }
 
-.navbar-watchlist-btn {
+.navbar-surprise-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #f1f5f9;
-  padding: 0.45rem 0.95rem;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.15),
+    rgba(217, 119, 6, 0.2)
+  );
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  padding: 0.45rem 1rem;
   border-radius: 9999px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.navbar-watchlist-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
+.navbar-surprise-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.3),
+    rgba(217, 119, 6, 0.35)
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
 }
 
-.navbar-watchlist-btn.active {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #fca5a5;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
-}
-
-.heart-icon {
-  font-size: 0.9rem;
-}
-
-.watchlist-count {
-  background: #ef4444;
-  color: #ffffff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 9999px;
-  min-width: 14px;
-  text-align: center;
+.dice-icon {
+  font-size: 1rem;
 }
 
 .navbar-badge {
@@ -145,11 +135,11 @@
     order: 2;
   }
 
-  .watchlist-label {
+  .surprise-label {
     display: none;
   }
 
-  .navbar-watchlist-btn {
-    padding: 0.4rem 0.6rem;
+  .navbar-surprise-btn {
+    padding: 0.4rem 0.65rem;
   }
 }
