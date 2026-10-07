@@ -156,31 +156,7 @@
   font-size: 0.95rem;
 }
 
-/* Theme Toggle Button (Dark ⇄ Light) */
-.navbar-theme-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-strong);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
 
-.navbar-theme-btn:hover {
-  background: var(--border-strong);
-  transform: scale(1.08);
-}
-
-.navbar-theme-btn svg {
-  display: block;
-  stroke: var(--text-primary);
-}
 
 .navbar-badge {
   background: rgba(99, 102, 241, 0.15);
@@ -234,8 +210,5 @@
     padding: 0.4rem 0.65rem;
   }
 
-  .navbar-theme-btn {
-    width: 32px;
-    height: 32px;
-  }
+
 }

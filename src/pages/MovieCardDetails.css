@@ -64,14 +64,7 @@
   );
 }
 
-[data-theme="light"] .hero-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(248, 250, 252, 0.4) 0%,
-    rgba(248, 250, 252, 0.92) 60%,
-    var(--bg-primary) 100%
-  );
-}
+
 
 .details-content-wrapper {
   position: relative;
