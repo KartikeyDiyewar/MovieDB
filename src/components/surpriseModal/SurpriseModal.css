@@ -2,13 +2,13 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(15, 17, 23, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem;
+  padding: 0.85rem;
   box-sizing: border-box;
   animation: fadeIn 0.2s ease-out;
 }
@@ -16,11 +16,11 @@
 .surprise-modal-content {
   width: 100%;
   max-width: 680px;
-  background: #14141e;
+  background: #222632;
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
 }
@@ -30,7 +30,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.85rem 1.25rem;
-  background: #1a1a28;
+  background: #282d3c;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 

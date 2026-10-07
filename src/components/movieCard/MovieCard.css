@@ -4,11 +4,13 @@
   position: relative;
   width: 100%;
   max-width: 210px;
-  background: #13131e;
+  min-width: 0;
+  box-sizing: border-box;
+  background: #222632;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.25s ease;
@@ -17,16 +19,17 @@
 }
 
 .card-container:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 16px 36px rgba(99, 102, 241, 0.35);
-  border-color: rgba(99, 102, 241, 0.6);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.55);
+  background: #272c3a;
 }
 
 .poster-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
-  background: #1a1a26;
+  background: #2a2e3d;
   overflow: hidden;
 }
 
@@ -49,7 +52,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #64748b;
+  color: #94a3b8;
   gap: 0.5rem;
   font-size: 2rem;
 }
@@ -62,61 +65,89 @@
 /* Rating Badge */
 .rating-badge {
   position: absolute;
-  top: 9px;
-  right: 9px;
+  top: 7px;
+  right: 7px;
   display: flex;
   align-items: center;
   gap: 3px;
-  background: rgba(9, 9, 15, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 3px 9px;
-  border-radius: 20px;
+  background: rgba(22, 25, 33, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 3px 8px;
+  border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #fbbf24;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
   z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .star-icon {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .movie-text-container {
-  padding: 0.8rem 0.95rem 0.95rem;
+  padding: 0.75rem 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  background: #13131e;
+  background: #222632;
   flex-grow: 1;
   justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .movie-title {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #f3f4f6;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
   letter-spacing: -0.01em;
+  width: 100%;
+  display: block;
 }
 
 .movie-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: #94a3b8;
 }
 
 .movie-year {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px 7px;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 2px 6px;
+  border-radius: 4px;
   font-weight: 500;
 }
+
+@media screen and (max-width: 640px) {
+  .card-container {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .movie-text-container {
+    padding: 0.6rem 0.65rem;
+  }
+
+  .movie-title {
+    font-size: 0.82rem;
+  }
+
+  .rating-badge {
+    top: 5px;
+    right: 5px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+}
+

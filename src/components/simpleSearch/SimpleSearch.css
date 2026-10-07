@@ -7,17 +7,18 @@
 .search-form {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.07);
+  background: #222632;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
   padding: 3px 5px 3px 14px;
   transition: all 0.25s ease;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .search-form:focus-within {
   border-color: #6366f1;
-  background: rgba(255, 255, 255, 0.12);
+  background: #272c3a;
   box-shadow: 0 0 16px rgba(99, 102, 241, 0.3);
 }
 
@@ -32,10 +33,11 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #f8fafc;
+  color: #f3f4f6;
   font-size: 0.9rem;
   width: 100%;
   padding-right: 20px;
+  font-family: inherit;
 }
 
 #search-holder::placeholder {
@@ -88,10 +90,10 @@
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: #171724;
+  background: #222632;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   z-index: 1000;
   display: flex;
@@ -105,7 +107,7 @@
   padding: 8px 12px;
   cursor: pointer;
   transition: background 0.2s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .search-dropdown-item:last-child {
@@ -113,7 +115,7 @@
 }
 
 .search-dropdown-item:hover {
-  background: rgba(99, 102, 241, 0.18);
+  background: rgba(99, 102, 241, 0.2);
 }
 
 .dropdown-thumb {
@@ -128,7 +130,7 @@
   width: 34px;
   height: 48px;
   border-radius: 4px;
-  background: #242436;
+  background: #2b3040;
   display: flex;
   align-items: center;
   justify-content: center;

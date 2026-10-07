@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setGenre,
@@ -17,20 +18,21 @@ const PRESET_CATEGORIES = [
 const RATING_FILTERS = [
   { value: 0, label: "Any Rating" },
   { value: 7, label: "⭐ 7.0+" },
-  { value: 8, label: "🏆 8.0+ Top Hits" },
+  { value: 8, label: "🏆 8.0+" },
 ];
 
 const ERA_FILTERS = [
   { value: "all", label: "All Years" },
-  { value: "recent", label: "2024–2026 🆕" },
-  { value: "2010s", label: "2010s Era" },
-  { value: "classic", label: "Pre-2010 Classics" },
+  { value: "recent", label: "2024–2026" },
+  { value: "2010s", label: "2010s" },
+  { value: "classic", label: "Classics" },
 ];
 
 const GenreFilter = () => {
   const dispatch = useDispatch();
   const { genres, selectedGenre, selectTerm, mode, minRating, yearEra } =
     useSelector((state) => state.base);
+  const [showAllGenres, setShowAllGenres] = useState(false);
 
   const handleCategoryClick = (categoryKey) => {
     dispatch(setSelect(categoryKey));
@@ -40,39 +42,90 @@ const GenreFilter = () => {
     dispatch(setGenre(genreId));
   };
 
+  const selectedGenreObj = genres.find((g) => g.id === selectedGenre);
+
   return (
     <div className="genre-filter-wrapper">
-      {/* Primary Category & Genre Chips */}
-      <div className="genre-filter-container">
-        {PRESET_CATEGORIES.map((cat) => {
-          const isActive =
-            mode === "category" && selectTerm === cat.id && !selectedGenre;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => handleCategoryClick(cat.id)}
-              className={`genre-chip ${isActive ? "active" : ""}`}
-            >
-              {cat.name}
-            </button>
-          );
-        })}
+      {/* Primary Category Row - Wrapped, Zero Horizontal Slider */}
+      <div className="primary-categories-row">
+        <div className="category-chips-grid">
+          {PRESET_CATEGORIES.map((cat) => {
+            const isActive =
+              mode === "category" && selectTerm === cat.id && !selectedGenre;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => handleCategoryClick(cat.id)}
+                className={`genre-chip ${isActive ? "active" : ""}`}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
+        </div>
 
-        <span className="genre-divider" />
-
-        {genres.map((g) => {
-          const isActive = mode === "genre" && selectedGenre === g.id;
-          return (
-            <button
-              key={g.id}
-              onClick={() => handleGenreClick(g.id)}
-              className={`genre-chip ${isActive ? "active" : ""}`}
+        {/* Genre Selector Dropdown & Pill */}
+        <div className="genre-select-box">
+          <div className="genre-select-wrapper">
+            <select
+              className="genre-dropdown-select"
+              value={mode === "genre" && selectedGenre ? selectedGenre : ""}
+              onChange={(e) => {
+                if (e.target.value) {
+                  handleGenreClick(Number(e.target.value));
+                } else {
+                  handleCategoryClick("popular");
+                }
+              }}
+              aria-label="Filter movies by genre"
             >
-              {g.name}
+              <option value="">🎭 All Genres ▾</option>
+              {genres.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {mode === "genre" && selectedGenreObj && (
+            <button
+              className="genre-active-pill"
+              onClick={() => handleCategoryClick("popular")}
+              title="Clear genre filter"
+            >
+              <span>{selectedGenreObj.name}</span>
+              <span className="clear-chip-x">✕</span>
             </button>
-          );
-        })}
+          )}
+
+          <button
+            className={`genre-toggle-pill ${showAllGenres ? "expanded" : ""}`}
+            onClick={() => setShowAllGenres(!showAllGenres)}
+            title="Toggle genre chips"
+          >
+            {showAllGenres ? "Hide ▲" : "Chips ▾"}
+          </button>
+        </div>
       </div>
+
+      {/* Expandable Genre Pills Grid (Fully wrapped, no overflow) */}
+      {showAllGenres && (
+        <div className="all-genres-wrap-container">
+          {genres.map((g) => {
+            const isActive = mode === "genre" && selectedGenre === g.id;
+            return (
+              <button
+                key={g.id}
+                onClick={() => handleGenreClick(g.id)}
+                className={`genre-chip mini ${isActive ? "active" : ""}`}
+              >
+                {g.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Advanced Quick Filters: Rating & Era */}
       <div className="sub-filters-container">
