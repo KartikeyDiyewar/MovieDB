@@ -1,6 +1,9 @@
 import { tmdbapi } from "../api/token";
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || "";
+const GROQ_API_KEY =
+  import.meta.env.GROQ_API_KEY ||
+  import.meta.env.VITE_GROQ_API_KEY ||
+  "";
 
 /**
  * Quick prompt inspiration presets
@@ -25,7 +28,7 @@ export async function getAiMovieRecommendations(prompt) {
 
   if (!GROQ_API_KEY) {
     throw new Error(
-      "Groq API key is not configured. Please add VITE_GROQ_API_KEY in your Vercel Environment Variables."
+      "Groq API key is not configured. Please add GROQ_API_KEY (or VITE_GROQ_API_KEY) in your Vercel Environment Variables."
     );
   }
 
@@ -166,7 +169,7 @@ export async function getAiMovieBreakdown(movieTitle, releaseYear = "") {
 
   if (!GROQ_API_KEY) {
     throw new Error(
-      "Groq API key is not configured. Please add VITE_GROQ_API_KEY in your Vercel Environment Variables."
+      "Groq API key is not configured. Please add GROQ_API_KEY (or VITE_GROQ_API_KEY) in your Vercel Environment Variables."
     );
   }
 
