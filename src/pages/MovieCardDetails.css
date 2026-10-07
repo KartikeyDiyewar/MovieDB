@@ -304,6 +304,21 @@
   background: rgba(255, 255, 255, 0.16);
 }
 
+.action-btn.ticket-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #0f172a;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.action-btn.ticket-btn:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+  color: #0f172a;
+}
+
 /* Where to Stream OTT Card */
 .ott-providers-card {
   background: #222632;
@@ -359,6 +374,20 @@
   gap: 4px;
 }
 
+.provider-item.clickable {
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.provider-item.clickable:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+.provider-item.clickable:hover .provider-name {
+  color: #38bdf8;
+}
+
 .provider-logo {
   width: 44px;
   height: 44px;
@@ -376,6 +405,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.2s ease;
 }
 
 .no-stream-msg {
@@ -398,11 +428,88 @@
   gap: 8px;
 }
 
+.provider-small-link {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.provider-small-link:hover {
+  transform: translateY(-2px) scale(1.1);
+}
+
 .provider-logo-small {
   width: 28px;
   height: 28px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* VPN Affiliate Banner */
+.vpn-stream-banner {
+  background: linear-gradient(135deg, rgba(34, 38, 50, 0.85), rgba(42, 48, 64, 0.95));
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.vpn-info {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.vpn-shield-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.vpn-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vpn-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.vpn-desc {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.vpn-cta-btn {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.vpn-cta-btn:hover {
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+  color: #ffffff;
 }
 
 .details-overview-section h3 {
@@ -591,6 +698,18 @@
   .action-btn {
     padding: 0.55rem 1rem;
     font-size: 0.82rem;
+  }
+
+  .vpn-stream-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .vpn-cta-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
   }
 }
 

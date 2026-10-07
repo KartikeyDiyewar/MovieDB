@@ -8,10 +8,17 @@ import {
 } from "../features/baseUrl/basicDataSlice";
 import Navbar from "../components/navbar/Navbar";
 import MovieCard from "../components/movieCard/MovieCard";
+import AdBanner from "../components/ads/AdBanner";
+import Footer from "../components/footer/Footer";
 import TrailerModal from "../components/trailerModal/TrailerModal";
 import SurpriseModal from "../components/surpriseModal/SurpriseModal";
 import Toast from "../components/toast/Toast";
 import BackToTop from "../components/backToTop/BackToTop";
+import {
+  getProviderLink,
+  getTicketBookingLink,
+  AFFILIATE_CONFIG,
+} from "../utils/affiliate";
 import "./MovieCardDetails.css";
 
 const MovieCardDetails = () => {
@@ -282,6 +289,15 @@ const MovieCardDetails = () => {
                     ▶ Watch Trailer
                   </button>
                 )}
+                <a
+                  className="action-btn ticket-btn"
+                  href={getTicketBookingLink(movie.title)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Check theatrical tickets & showtimes"
+                >
+                  🎟️ Book Tickets ↗
+                </a>
                 <button
                   className="action-btn review-btn"
                   onClick={handleOpenReviews}
@@ -306,10 +322,13 @@ const MovieCardDetails = () => {
                     <span className="ott-type-label">Subscription:</span>
                     <div className="ott-logos">
                       {streamList.map((p) => (
-                        <div
+                        <a
                           key={p.provider_id}
-                          className="provider-item"
-                          title={p.provider_name}
+                          href={getProviderLink(p.provider_name, movie.title)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="provider-item clickable"
+                          title={`Watch on ${p.provider_name}`}
                         >
                           <img
                             src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
@@ -317,7 +336,7 @@ const MovieCardDetails = () => {
                             className="provider-logo"
                           />
                           <span className="provider-name">{p.provider_name}</span>
-                        </div>
+                        </a>
                       ))}
                     </div>
                   </div>
@@ -325,7 +344,7 @@ const MovieCardDetails = () => {
                   <p className="no-stream-msg">
                     Not currently streaming on subscription OTT in {regionCode}.
                     {rentList.length > 0 || buyList.length > 0
-                      ? " Available for digital rent/purchase."
+                      ? " Available for digital rent/purchase below."
                       : ""}
                   </p>
                 )}
@@ -341,17 +360,48 @@ const MovieCardDetails = () => {
                         )
                         .slice(0, 6)
                         .map((p) => (
-                          <img
+                          <a
                             key={p.provider_id}
-                            src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
-                            alt={p.provider_name}
-                            title={p.provider_name}
-                            className="provider-logo-small"
-                          />
+                            href={getProviderLink(p.provider_name, movie.title)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="provider-small-link"
+                            title={`Rent or buy on ${p.provider_name}`}
+                          >
+                            <img
+                              src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                              alt={p.provider_name}
+                              className="provider-logo-small"
+                            />
+                          </a>
                         ))}
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Global Streaming with VPN Affiliate Callout */}
+              <div className="vpn-stream-banner">
+                <div className="vpn-info">
+                  <span className="vpn-shield-icon">🛡️</span>
+                  <div className="vpn-text">
+                    <span className="vpn-title">
+                      Not available in your country?
+                    </span>
+                    <p className="vpn-desc">
+                      Stream global Netflix, Prime & Disney+ libraries safely with
+                      NordVPN.
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={AFFILIATE_CONFIG.vpnUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="vpn-cta-btn"
+                >
+                  Unlock with VPN ↗
+                </a>
               </div>
 
               <div className="details-overview-section">
@@ -432,6 +482,13 @@ const MovieCardDetails = () => {
           </div>
         </section>
       )}
+
+      {/* Responsive Monetization Ad Container */}
+      <div style={{ maxWidth: "1200px", margin: "2.5rem auto 0", padding: "0 1.5rem", boxSizing: "border-box", width: "100%" }}>
+        <AdBanner type="inline" />
+      </div>
+
+      <Footer />
 
       <TrailerModal />
       <SurpriseModal />

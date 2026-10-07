@@ -1,0 +1,122 @@
+.ad-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 1.5rem auto;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+}
+
+.ad-container.inline {
+  max-width: 960px;
+  margin: 2rem auto;
+}
+
+.ad-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.native-sponsor .sponsor-content {
+  background: linear-gradient(135deg, #1f2330 0%, #252b3b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1.1rem 1.4rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.native-sponsor .sponsor-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #6366f1, #8b5cf6);
+}
+
+.sponsor-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sponsor-highlight {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.15);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.sponsor-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.sponsor-text h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #f3f4f6;
+  font-weight: 700;
+}
+
+.sponsor-text p {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.sponsor-cta-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.sponsor-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55);
+}
+
+@media screen and (max-width: 640px) {
+  .ad-container {
+    padding: 0 0.75rem;
+    margin: 1.25rem auto;
+  }
+
+  .native-sponsor .sponsor-content {
+    padding: 0.85rem 1rem;
+  }
+
+  .sponsor-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .sponsor-cta-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
