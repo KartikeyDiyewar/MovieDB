@@ -4,6 +4,7 @@ import MovieCardDetails from "./pages/MovieCardDetails";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import AboutContact from "./pages/AboutContact";
+import Login from "./pages/Login";
 
 import WatchlistModal from "./components/watchlist/WatchlistModal";
 import AiMovieCompareModal from "./components/aiCompare/AiMovieCompareModal";
@@ -15,6 +16,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Login />} />
           <Route path="/movie/:id" element={<MovieCardDetails />} />
           <Route path="/moviecard/:id" element={<MovieCardDetails />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />

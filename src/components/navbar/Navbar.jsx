@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import SimpleSearch from "../simpleSearch/SimpleSearch";
@@ -7,7 +7,9 @@ import {
   openSurpriseModal,
   openAiModal,
   openWatchlist,
+  setToast,
 } from "../../features/baseUrl/basicDataSlice";
+import { logoutUser } from "../../features/auth/authSlice";
 import AiSparkIcon from "../common/AiSparkIcon";
 import "./Navbar.css";
 
@@ -17,6 +19,8 @@ const Navbar = () => {
   const { totalData, isSearch, searchTerm, watchlist } = useSelector(
     (store) => store.base
   );
+  const { user, isAuthenticated } = useSelector((store) => store.auth || {});
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     // Ensure clean dark theme always
@@ -35,6 +39,12 @@ const Navbar = () => {
 
   const handleAiClick = () => {
     dispatch(openAiModal());
+  };
+
+  const handleLogout = () => {
+    setShowUserMenu(false);
+    dispatch(logoutUser());
+    dispatch(setToast("Signed out successfully. See you soon! 👋"));
   };
 
   return (
@@ -128,6 +138,69 @@ const Navbar = () => {
             <span className="dice-icon">🎲</span>
             <span className="surprise-label">Surprise</span>
           </button>
+
+          {/* User Profile or Sign In Button */}
+          {isAuthenticated && user ? (
+            <div className="navbar-user-box">
+              <button
+                type="button"
+                className="navbar-user-btn"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                title={`Signed in as ${user.name}`}
+              >
+                <img
+                  src={
+                    user.avatar ||
+                    `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`
+                  }
+                  alt={user.name}
+                  className="navbar-user-avatar"
+                />
+                <span className="navbar-user-name">
+                  {user.name.split(" ")[0]}
+                </span>
+                <span className="user-caret">▾</span>
+              </button>
+
+              {showUserMenu && (
+                <div className="user-dropdown-menu">
+                  <div className="user-dropdown-header">
+                    <p className="user-dropdown-name">{user.name}</p>
+                    <p className="user-dropdown-role">
+                      {user.email || user.phone || user.role}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="user-dropdown-item"
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      dispatch(openWatchlist());
+                    }}
+                  >
+                    <span>🔖 My Watchlist</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="user-dropdown-item logout"
+                    onClick={handleLogout}
+                  >
+                    <span>🚪 Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="navbar-signin-btn"
+              onClick={() => navigate("/login")}
+              title="Sign In or Create Account"
+            >
+              <span className="signin-user-icon">👤</span>
+              <span className="signin-label">Sign In</span>
+            </button>
+          )}
 
 
 
