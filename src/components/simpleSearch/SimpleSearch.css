@@ -67,19 +67,19 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
   flex-shrink: 0;
+  color: #ffffff;
 }
 
 .search-btn:hover {
-  transform: scale(1.05);
-  opacity: 0.95;
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
 }
 
-#search-img {
-  width: 14px;
-  height: 14px;
-  filter: brightness(0) invert(1);
+.search-btn svg {
+  display: block;
+  stroke: #ffffff;
 }
 
 /* Autocomplete Dropdown */

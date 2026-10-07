@@ -77,7 +77,7 @@ const HeroBanner = () => {
     >
       <div className="hero-gradient-overlay" />
 
-      <div className="hero-banner-content">
+      <div className="hero-banner-content" key={movie.id}>
         <div className="hero-spotlight-tag">
           <span className="flame-icon">🔥</span> TRENDING SPOTLIGHT
         </div>

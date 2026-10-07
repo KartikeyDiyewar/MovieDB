@@ -1,6 +1,6 @@
 .details-page-wrapper {
   min-height: 100vh;
-  background-color: #0d0d14;
+  background-color: #09090f;
   color: #f1f5f9;
   padding-bottom: 5rem;
 }
@@ -42,7 +42,7 @@
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  min-height: 540px;
+  min-height: 560px;
   display: flex;
   align-items: flex-end;
 }
@@ -55,9 +55,9 @@
   bottom: 0;
   background: linear-gradient(
     to bottom,
-    rgba(13, 13, 20, 0.45) 0%,
-    rgba(13, 13, 20, 0.85) 60%,
-    #0d0d14 100%
+    rgba(9, 9, 15, 0.4) 0%,
+    rgba(9, 9, 15, 0.88) 60%,
+    #09090f 100%
   );
 }
 
@@ -71,24 +71,78 @@
   box-sizing: border-box;
 }
 
-.back-btn {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-  padding: 0.45rem 1.1rem;
+/* Modern Top Navigation Bar with Back Pill & Breadcrumbs */
+.details-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.modern-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 18, 28, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f1f5f9;
+  padding: 0.55rem 1.25rem;
   border-radius: 9999px;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: 1.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+.modern-back-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #818cf8;
+  color: #ffffff;
+  transform: translateX(-4px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+}
+
+.back-arrow-icon {
+  transition: transform 0.2s ease;
+}
+
+.modern-back-btn:hover .back-arrow-icon {
   transform: translateX(-3px);
+}
+
+.details-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.crumb-link {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.crumb-link:hover {
+  color: #818cf8;
+}
+
+.crumb-sep {
+  color: #475569;
+}
+
+.crumb-current {
+  color: #e2e8f0;
+  font-weight: 600;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .details-main-grid {
@@ -105,7 +159,7 @@
 .details-poster {
   width: 100%;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: block;
 }
@@ -124,11 +178,12 @@
 }
 
 .details-title {
-  font-size: clamp(1.8rem, 3.5vw, 2.7rem);
+  font-size: clamp(2rem, 3.8vw, 3rem);
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.1;
   margin: 0;
   color: #ffffff;
+  letter-spacing: -0.02em;
 }
 
 .details-tagline {
@@ -182,8 +237,8 @@
 }
 
 .genre-tag {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #cbd5e1;
   padding: 4px 12px;
   border-radius: 9999px;
@@ -248,10 +303,10 @@
 
 /* Where to Stream OTT Card */
 .ott-providers-card {
-  background: rgba(26, 26, 38, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(22, 22, 34, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
@@ -433,7 +488,7 @@
 }
 
 .cast-card {
-  background: #171724;
+  background: #151522;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -498,6 +553,10 @@
 
   .details-content-wrapper {
     padding: 1.5rem 1rem 1rem;
+  }
+
+  .details-breadcrumbs {
+    display: none;
   }
 
   .cast-grid {

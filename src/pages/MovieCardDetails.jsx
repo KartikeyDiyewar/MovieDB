@@ -67,6 +67,14 @@ const MovieCardDetails = () => {
     };
   }, [id]);
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
   const handleShare = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href);
@@ -102,7 +110,7 @@ const MovieCardDetails = () => {
         <Navbar />
         <div className="details-loading">
           <div className="details-spinner" />
-          <p>Loading movie details & streaming providers...</p>
+          <p>Loading cinematic experience...</p>
         </div>
       </div>
     );
@@ -170,10 +178,44 @@ const MovieCardDetails = () => {
         }}
       >
         <div className="hero-overlay" />
+
         <div className="details-content-wrapper">
-          <button onClick={() => navigate(-1)} className="back-btn">
-            ← Back
-          </button>
+          {/* Top Breadcrumb & Modern Back Navigation Bar */}
+          <div className="details-nav-bar">
+            <button
+              onClick={handleBack}
+              className="modern-back-btn"
+              title="Return to browse"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="back-arrow-icon"
+              >
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Back to Movies</span>
+            </button>
+
+            <div className="details-breadcrumbs">
+              <span onClick={() => navigate("/")} className="crumb-link">
+                Home
+              </span>
+              <span className="crumb-sep">/</span>
+              <span onClick={() => navigate("/")} className="crumb-link">
+                Movies
+              </span>
+              <span className="crumb-sep">/</span>
+              <span className="crumb-current">{movie.title}</span>
+            </div>
+          </div>
 
           <div className="details-main-grid">
             {/* Left: Poster */}
@@ -245,7 +287,7 @@ const MovieCardDetails = () => {
                   onClick={handleOpenReviews}
                   title="Search movie reviews and video breakdowns on YouTube"
                 >
-                  📺 Reviews on YouTube ↗
+                  📺 YouTube Reviews ↗
                 </button>
                 <button className="action-btn share-btn" onClick={handleShare}>
                   🔗 Share
