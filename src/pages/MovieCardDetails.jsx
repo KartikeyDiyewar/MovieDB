@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { tmdbapi } from "../api/token";
 import {
   setToast,
   openTrailerModal,
+  toggleWatchlist,
+  openCompareModal,
 } from "../features/baseUrl/basicDataSlice";
 import Navbar from "../components/navbar/Navbar";
 import MovieCard from "../components/movieCard/MovieCard";
@@ -14,6 +16,7 @@ import TrailerModal from "../components/trailerModal/TrailerModal";
 import SurpriseModal from "../components/surpriseModal/SurpriseModal";
 import AiModal from "../components/aiModal/AiModal";
 import AiMovieBreakdown from "../components/aiBreakdown/AiMovieBreakdown";
+import AiDoubleFeature from "../components/aiDoubleFeature/AiDoubleFeature";
 import Toast from "../components/toast/Toast";
 import BackToTop from "../components/backToTop/BackToTop";
 import {
@@ -32,6 +35,11 @@ const MovieCardDetails = () => {
   const [providers, setProviders] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const watchlist = useSelector((state) => state.base.watchlist) || [];
+  const isSaved = movie
+    ? watchlist.some((m) => m.id === movie.id || m.tmdbId === movie.id)
+    : false;
 
   useEffect(() => {
     let isMounted = true;
@@ -307,6 +315,20 @@ const MovieCardDetails = () => {
                 >
                   📺 YouTube Reviews ↗
                 </button>
+                <button
+                  className={`action-btn watchlist-detail-btn ${isSaved ? "saved" : ""}`}
+                  onClick={() => dispatch(toggleWatchlist(movie))}
+                  title={isSaved ? "Remove from Watchlist" : "Save to Watchlist"}
+                >
+                  {isSaved ? "✓ In Watchlist" : "🔖 Add to Watchlist"}
+                </button>
+                <button
+                  className="action-btn compare-detail-btn"
+                  onClick={() => dispatch(openCompareModal(movie))}
+                  title="Compare head-to-head against another film"
+                >
+                  ⚖️ AI Face-Off
+                </button>
                 <button className="action-btn share-btn" onClick={handleShare}>
                   🔗 Share
                 </button>
@@ -317,6 +339,9 @@ const MovieCardDetails = () => {
                 movieTitle={movie.title}
                 releaseYear={releaseYear}
               />
+
+              {/* AI Double-Feature Companion Pairing */}
+              <AiDoubleFeature movie={movie} />
 
               {/* Where to Watch / OTT Providers Section */}
               <div className="ott-providers-card">

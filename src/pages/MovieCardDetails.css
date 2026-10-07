@@ -321,6 +321,40 @@
   color: #0f172a;
 }
 
+.action-btn.watchlist-detail-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+}
+
+.action-btn.watchlist-detail-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: #a78bfa;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.action-btn.watchlist-detail-btn.saved {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(99, 102, 241, 0.4));
+  border-color: #8b5cf6;
+  color: #f1f5f9;
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+}
+
+.action-btn.compare-detail-btn {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.2));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+}
+
+.action-btn.compare-detail-btn:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.35));
+  border-color: #34d399;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
 /* Where to Stream OTT Card */
 .ott-providers-card {
   background: var(--bg-card);

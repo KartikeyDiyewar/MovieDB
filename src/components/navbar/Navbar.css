@@ -132,6 +132,45 @@
   transform: scale(1.15) rotate(15deg);
 }
 
+/* Watchlist Button */
+.navbar-watchlist-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.navbar-watchlist-btn:hover {
+  background: var(--bg-surface);
+  border-color: #818cf8;
+  color: #a5b4fc;
+  transform: translateY(-2px);
+}
+
+.watchlist-nav-icon {
+  font-size: 0.95rem;
+}
+
+.navbar-watchlist-count {
+  background: #8b5cf6;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  min-width: 16px;
+  text-align: center;
+}
+
 /* Surprise Me Button */
 .navbar-surprise-btn {
   display: inline-flex;

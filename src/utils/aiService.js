@@ -314,3 +314,109 @@ Respond strictly in JSON:
     movies: augmented.filter((m) => m && m.title),
   };
 }
+
+/**
+ * AI Double Feature Pairing Engine: Curates the perfect companion film for a 2-movie night
+ */
+export async function getAiDoubleFeature(movieTitle, releaseYear = "", overview = "") {
+  if (!movieTitle) throw new Error("Movie title is required");
+
+  const systemPrompt = `You are KD Cinema AI Double Feature Curator.
+For the given primary film, curate the ultimate COMPANION MOVIE to watch together in a 2-movie marathon.
+The pairing should either share a thematic core, offer an inspired stylistic contrast, or form a spiritual sequel.
+Respond strictly in JSON:
+{
+  "pairedMovieTitle": "Exact Recognized Film Title",
+  "themeConnection": "2 sentences explaining why these two films elevate each other when watched back-to-back",
+  "viewingOrder": "1 sentence recommending which to watch first and why",
+  "intermissionVibe": "A fun recommendation for snacks, drinks, or intermission conversation"
+}`;
+
+  const userContent = `Primary Movie: ${movieTitle} (${releaseYear}). Overview: ${overview}`;
+
+  const parsed = await callGroqApi([
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userContent },
+  ], 0.7);
+
+  const rawTitle = parsed.pairedMovieTitle || "";
+  const enriched = await enrichMovieTitlesWithTmdb([rawTitle]);
+  const pairedMovie = enriched[0] || null;
+
+  return {
+    pairedMovie,
+    themeConnection: parsed.themeConnection || "A complementary cinematic journey.",
+    viewingOrder: parsed.viewingOrder || `Start with ${movieTitle}, then follow with ${rawTitle}.`,
+    intermissionVibe: parsed.intermissionVibe || "Grab fresh popcorn and discuss the deeper themes.",
+  };
+}
+
+/**
+ * AI Watchlist Taste Analyst: Roasts/praises and guides the user's saved watchlist
+ */
+export async function getAiWatchlistAnalysis(movieTitles) {
+  if (!Array.isArray(movieTitles) || movieTitles.length === 0) {
+    throw new Error("No movies in watchlist to analyze.");
+  }
+
+  const systemPrompt = `You are KD Cinema AI Taste Analyst.
+Analyze the user's saved movie watchlist.
+Deliver an insightful, witty, personality-driven breakdown of their cinema psyche.
+Respond strictly in JSON:
+{
+  "archetype": "A catchy, evocative 3-word cinema persona title (e.g. 'Cerebral Noir Seeker' or 'Adrenaline Escape Artist')",
+  "roastOrPraise": "A charming, clever 2-sentence analysis praising and lightly poking fun at their viewing habits",
+  "dnaBreakdown": ["Percentage & Genre 1", "Percentage & Genre 2", "Percentage & Genre 3"],
+  "recommendedFirst": "Exact Movie Title from their list to watch first tonight",
+  "whyWatchFirst": "1 compelling sentence on why this is their best immediate pick tonight"
+}`;
+
+  const userContent = `Saved Movies: ${movieTitles.join(", ")}`;
+
+  const parsed = await callGroqApi([
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userContent },
+  ], 0.7);
+
+  return {
+    archetype: parsed.archetype || "Passionate Cinema Explorer",
+    roastOrPraise: parsed.roastOrPraise || "Your taste shows a deep appreciation for quality cinema and strong storytelling.",
+    dnaBreakdown: Array.isArray(parsed.dnaBreakdown) ? parsed.dnaBreakdown : ["50% Drama", "30% Thriller", "20% Adventure"],
+    recommendedFirst: parsed.recommendedFirst || movieTitles[0],
+    whyWatchFirst: parsed.whyWatchFirst || "A standout narrative to kick off your evening.",
+  };
+}
+
+/**
+ * AI Movie Face-Off: Compares any two films head-to-head
+ */
+export async function getAiMovieComparison(movieA, movieB) {
+  if (!movieA || !movieB) throw new Error("Both movie titles are required for comparison.");
+
+  const systemPrompt = `You are KD Cinema AI Head-to-Head Film Critic.
+Compare these two movies head-to-head with objectivity and deep cinematic insight.
+Respond strictly in JSON:
+{
+  "coreContrast": "1 sentence defining the fundamental artistic difference between both films",
+  "storyWinner": "Film Title — 1 sentence explaining why its script or pacing triumphs",
+  "visualsWinner": "Film Title — 1 sentence on cinematography, set design, or CGI",
+  "depthWinner": "Film Title — 1 sentence on emotional or philosophical complexity",
+  "verdict": "A clear, decisive final recommendation on who should watch which film"
+}`;
+
+  const userContent = `Movie A: ${movieA}. Movie B: ${movieB}.`;
+
+  const parsed = await callGroqApi([
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userContent },
+  ], 0.6);
+
+  return {
+    coreContrast: parsed.coreContrast || "Two distinct cinematic philosophies.",
+    storyWinner: parsed.storyWinner || `${movieA} for narrative structure.`,
+    visualsWinner: parsed.visualsWinner || `${movieB} for striking visual flair.`,
+    depthWinner: parsed.depthWinner || `${movieA} for emotional resonance.`,
+    verdict: parsed.verdict || `Watch ${movieA} for character depth, or ${movieB} for pure spectacle.`,
+  };
+}
+

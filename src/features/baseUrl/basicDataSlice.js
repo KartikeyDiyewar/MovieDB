@@ -1,6 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { tmdbapi } from "../../api/token";
 
+const loadLocalWatchlist = () => {
+  try {
+    const saved = localStorage.getItem("kd_watchlist");
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+};
+
 const initialState = {
   totalData: {},
   urlData: [],
@@ -15,6 +24,7 @@ const initialState = {
   selectedGenre: null,
   minRating: 0, // 0 | 7 | 8
   yearEra: "all", // "all" | "recent" | "2010s" | "classic"
+  ottProvider: null, // null | "8" (Netflix) | "119" (Prime) | "337" (Disney+) | "350" (Apple)
   mode: "category", // "category" | "genre" | "search"
   toastMessage: null,
   activeTrailer: null, // { title: string, videoKey: string } | null
@@ -22,6 +32,10 @@ const initialState = {
   isSurpriseOpen: false,
   isAiModalOpen: false,
   aiSearchSummary: null,
+  watchlist: loadLocalWatchlist(),
+  isWatchlistOpen: false,
+  isCompareOpen: false,
+  compareMovieA: null,
   genres: [
     { id: 878, name: "Sci-Fi 🚀" },
     { id: 28, name: "Action 💥" },
@@ -97,17 +111,22 @@ export const fetchSurpriseMovie = createAsyncThunk(
 export const fetchMovies = createAsyncThunk(
   "base/fetchMovies",
   async (_, { getState, rejectWithValue }) => {
-    const { selectTerm, selectedGenre, currentPage, mode, minRating, yearEra } =
+    const { selectTerm, selectedGenre, currentPage, mode, minRating, yearEra, ottProvider } =
       getState().base;
     try {
       let endpoint = "";
-      const hasCustomFilters = minRating > 0 || yearEra !== "all";
+      const hasCustomFilters = minRating > 0 || yearEra !== "all" || Boolean(ottProvider);
 
       if (mode === "genre" || hasCustomFilters) {
-        let params = [`page=${currentPage}`, "vote_count.gte=80"];
+        let params = [`page=${currentPage}`, "vote_count.gte=50"];
 
         if (selectedGenre) {
           params.push(`with_genres=${selectedGenre}`);
+        }
+
+        if (ottProvider) {
+          params.push(`with_watch_providers=${ottProvider}`);
+          params.push("watch_region=IN");
         }
 
         if (minRating > 0) {
@@ -254,6 +273,61 @@ export const basicDataSlice = createSlice({
     closeAiModal: (state) => {
       state.isAiModalOpen = false;
     },
+    setOttProvider: (state, action) => {
+      state.ottProvider = action.payload;
+      state.currentPage = 1;
+      state.urlData = [];
+      state.isData = false;
+    },
+    toggleWatchlist: (state, action) => {
+      const movie = action.payload;
+      if (!movie || (!movie.id && !movie.tmdbId)) return;
+      const targetId = movie.id || movie.tmdbId;
+      const index = state.watchlist.findIndex((m) => m.id === targetId || m.tmdbId === targetId);
+      if (index >= 0) {
+        state.watchlist.splice(index, 1);
+        state.toastMessage = `Removed "${movie.title || "film"}" from Watchlist`;
+      } else {
+        state.watchlist.unshift({
+          id: targetId,
+          tmdbId: targetId,
+          title: movie.title || movie.name,
+          poster_path: movie.poster_path,
+          vote_average: movie.vote_average,
+          release_date: movie.release_date || movie.first_air_date || "",
+          overview: movie.overview || "",
+        });
+        state.toastMessage = `Added "${movie.title || "film"}" to Watchlist ⭐`;
+      }
+      try {
+        localStorage.setItem("kd_watchlist", JSON.stringify(state.watchlist));
+      } catch (e) {
+        console.error("Watchlist storage error", e);
+      }
+    },
+    clearWatchlist: (state) => {
+      state.watchlist = [];
+      state.toastMessage = "Watchlist cleared";
+      try {
+        localStorage.removeItem("kd_watchlist");
+      } catch (e) {
+        console.error("Watchlist clear error", e);
+      }
+    },
+    openWatchlist: (state) => {
+      state.isWatchlistOpen = true;
+    },
+    closeWatchlist: (state) => {
+      state.isWatchlistOpen = false;
+    },
+    openCompareModal: (state, action) => {
+      state.compareMovieA = action.payload || null;
+      state.isCompareOpen = true;
+    },
+    closeCompareModal: (state) => {
+      state.isCompareOpen = false;
+      state.compareMovieA = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -358,6 +432,13 @@ export const {
   setGenre,
   setMinRating,
   setYearEra,
+  setOttProvider,
+  toggleWatchlist,
+  clearWatchlist,
+  openWatchlist,
+  closeWatchlist,
+  openCompareModal,
+  closeCompareModal,
   clearSearch,
   setPage,
   setToast,

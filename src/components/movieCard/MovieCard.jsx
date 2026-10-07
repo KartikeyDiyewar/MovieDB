@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleWatchlist } from "../../features/baseUrl/basicDataSlice";
 import "./MovieCard.css";
 
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const watchlist = useSelector((state) => state.base.watchlist) || [];
 
   if (!movie) return null;
+
+  const targetId = movie.id || movie.tmdbId;
+  const isSaved = watchlist.some((m) => m.id === targetId || m.tmdbId === targetId);
 
   const imageBasePath = "https://image.tmdb.org/t/p/w500";
   const posterUrl = movie.poster_path
@@ -43,6 +50,20 @@ const MovieCard = ({ movie }) => {
             <p>No Image</p>
           </div>
         )}
+
+        {/* Bookmark Watchlist Button */}
+        <button
+          type="button"
+          className={`card-watchlist-btn ${isSaved ? "saved" : ""}`}
+          title={isSaved ? "Remove from Watchlist" : "Save to Watchlist"}
+          aria-label={isSaved ? "Remove from Watchlist" : "Save to Watchlist"}
+          onClick={(e) => {
+            e.stopPropagation();
+            dispatch(toggleWatchlist(movie));
+          }}
+        >
+          {isSaved ? "🔖" : "➕"}
+        </button>
 
         {/* Rating Badge */}
         <div className="rating-badge">

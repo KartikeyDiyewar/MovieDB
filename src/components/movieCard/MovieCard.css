@@ -62,6 +62,44 @@
   margin: 0;
 }
 
+/* Card Watchlist Button */
+.card-watchlist-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  padding: 0;
+}
+
+.card-watchlist-btn:hover {
+  transform: scale(1.15);
+  background: rgba(99, 102, 241, 0.85);
+  border-color: #818cf8;
+  color: #ffffff;
+}
+
+.card-watchlist-btn.saved {
+  background: rgba(139, 92, 246, 0.9);
+  border-color: #a78bfa;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
 /* Rating Badge */
 .rating-badge {
   position: absolute;

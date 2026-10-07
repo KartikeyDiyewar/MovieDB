@@ -5,6 +5,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import AboutContact from "./pages/AboutContact";
 
+import WatchlistModal from "./components/watchlist/WatchlistModal";
+import AiMovieCompareModal from "./components/aiCompare/AiMovieCompareModal";
 import "./App.css";
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
           <Route path="/about" element={<AboutContact />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <WatchlistModal />
+        <AiMovieCompareModal />
       </BrowserRouter>
     </main>
   );

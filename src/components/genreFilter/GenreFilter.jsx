@@ -5,6 +5,7 @@ import {
   setSelect,
   setMinRating,
   setYearEra,
+  setOttProvider,
   openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
 import AiSparkIcon from "../common/AiSparkIcon";
@@ -30,9 +31,17 @@ const ERA_FILTERS = [
   { value: "classic", label: "Classics" },
 ];
 
+const OTT_FILTERS = [
+  { value: null, label: "All Streams" },
+  { value: "8", label: "Netflix 🔴" },
+  { value: "119", label: "Prime 🔵" },
+  { value: "337", label: "Disney+ 🟡" },
+  { value: "350", label: "Apple TV 🍏" },
+];
+
 const GenreFilter = () => {
   const dispatch = useDispatch();
-  const { genres, selectedGenre, selectTerm, mode, minRating, yearEra } =
+  const { genres, selectedGenre, selectTerm, mode, minRating, yearEra, ottProvider } =
     useSelector((state) => state.base);
   const [showAllGenres, setShowAllGenres] = useState(false);
 
@@ -129,8 +138,21 @@ const GenreFilter = () => {
         </div>
       )}
 
-      {/* Advanced Quick Filters: Rating & Era */}
+      {/* Advanced Quick Filters: OTT, Rating & Era */}
       <div className="sub-filters-container">
+        <div className="filter-group">
+          <span className="filter-group-label">Stream:</span>
+          {OTT_FILTERS.map((of) => (
+            <button
+              key={of.label}
+              onClick={() => dispatch(setOttProvider(of.value))}
+              className={`filter-tag ${ottProvider === of.value ? "selected" : ""}`}
+            >
+              {of.label}
+            </button>
+          ))}
+        </div>
+
         <div className="filter-group">
           <span className="filter-group-label">Score:</span>
           {RATING_FILTERS.map((rf) => (

@@ -6,6 +6,7 @@ import {
   clearSearch,
   openSurpriseModal,
   openAiModal,
+  openWatchlist,
 } from "../../features/baseUrl/basicDataSlice";
 import AiSparkIcon from "../common/AiSparkIcon";
 import "./Navbar.css";
@@ -13,7 +14,7 @@ import "./Navbar.css";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { totalData, isSearch, searchTerm } = useSelector(
+  const { totalData, isSearch, searchTerm, watchlist } = useSelector(
     (store) => store.base
   );
 
@@ -102,6 +103,20 @@ const Navbar = () => {
           >
             <AiSparkIcon size={16} />
             <span className="ai-label">Cinema AI</span>
+          </button>
+
+          {/* Watchlist Button */}
+          <button
+            className="navbar-watchlist-btn"
+            onClick={() => dispatch(openWatchlist())}
+            title="Saved Watchlist & AI Taste Analysis"
+            aria-label="Open Watchlist"
+          >
+            <span className="watchlist-nav-icon">🔖</span>
+            <span className="watchlist-nav-label">Watchlist</span>
+            {watchlist && watchlist.length > 0 && (
+              <span className="navbar-watchlist-count">{watchlist.length}</span>
+            )}
           </button>
 
           {/* Surprise Me Button */}
