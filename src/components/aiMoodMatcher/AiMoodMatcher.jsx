@@ -19,6 +19,7 @@ const AiMoodMatcher = () => {
   const [curatorNote, setCuratorNote] = useState("");
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
+  const [isSectionOpen, setIsSectionOpen] = useState(true);
 
   const handleSelectMood = async (mood) => {
     if (activeMood?.id === mood.id && movies.length > 0) {
@@ -78,10 +79,23 @@ const AiMoodMatcher = () => {
             </p>
           </div>
         </div>
+
+        <button
+          type="button"
+          className="mood-toggle-section-btn"
+          onClick={() => setIsSectionOpen(!isSectionOpen)}
+          aria-expanded={isSectionOpen}
+          title={isSectionOpen ? "Collapse Vibe Matcher" : "Expand Vibe Matcher"}
+        >
+          {isSectionOpen ? "Collapse ▲" : "Explore Vibes ▾"}
+        </button>
       </div>
 
-      {/* Mood Selector Chips */}
-      <div className="mood-chips-container">
+      {/* Collapsible Content */}
+      {isSectionOpen && (
+        <>
+          {/* Mood Selector Chips */}
+          <div className="mood-chips-container">
         {MOOD_PRESETS.map((m) => {
           const isActive = activeMood?.id === m.id;
           return (
@@ -214,6 +228,8 @@ const AiMoodMatcher = () => {
             })}
           </div>
         </div>
+      )}
+        </>
       )}
     </section>
   );

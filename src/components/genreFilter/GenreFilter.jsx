@@ -41,9 +41,18 @@ const OTT_FILTERS = [
 
 const GenreFilter = () => {
   const dispatch = useDispatch();
-  const { genres, selectedGenre, selectTerm, mode, minRating, yearEra, ottProvider } =
-    useSelector((state) => state.base);
+  const {
+    genres,
+    selectedGenre,
+    selectTerm,
+    mode,
+    minRating,
+    yearEra,
+    ottProvider,
+  } = useSelector((state) => state.base);
+
   const [showAllGenres, setShowAllGenres] = useState(false);
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
 
   const handleCategoryClick = (categoryKey) => {
     dispatch(setSelect(categoryKey));
@@ -55,17 +64,36 @@ const GenreFilter = () => {
 
   const selectedGenreObj = genres.find((g) => g.id === selectedGenre);
 
+  // Compute active advanced filters count
+  const activeAdvancedCount =
+    (ottProvider ? 1 : 0) +
+    (minRating > 0 ? 1 : 0) +
+    (yearEra !== "all" ? 1 : 0);
+
+  const handleResetFilters = () => {
+    dispatch(setOttProvider(null));
+    dispatch(setMinRating(0));
+    dispatch(setYearEra("all"));
+  };
+
+  const activeOttObj = OTT_FILTERS.find((o) => o.value === ottProvider);
+  const activeRatingObj = RATING_FILTERS.find((r) => r.value === minRating);
+  const activeEraObj = ERA_FILTERS.find((e) => e.value === yearEra);
+
   return (
     <div className="genre-filter-wrapper">
-      {/* Primary Category Row - Wrapped, Zero Horizontal Slider */}
-      <div className="primary-categories-row">
-        <div className="category-chips-grid">
+      {/* Primary Category Row - Touch-Friendly Horizontal Slider */}
+      <div className="primary-categories-bar">
+        {/* Horizontal Swipeable Track */}
+        <div className="category-slider-track" role="tablist">
           {PRESET_CATEGORIES.map((cat) => {
             const isActive =
               mode === "category" && selectTerm === cat.id && !selectedGenre;
             return (
               <button
                 key={cat.id}
+                role="tab"
+                aria-selected={isActive}
                 onClick={() => handleCategoryClick(cat.id)}
                 className={`genre-chip ${isActive ? "active" : ""}`}
               >
@@ -75,8 +103,9 @@ const GenreFilter = () => {
           })}
         </div>
 
-        {/* Genre Selector Dropdown & Pill */}
-        <div className="genre-select-box">
+        {/* Toolbar Controls: Genre Select + Advanced Filters Drawer Button */}
+        <div className="filter-controls-row">
+          {/* Genre Dropdown */}
           <div className="genre-select-wrapper">
             <select
               className="genre-dropdown-select"
@@ -99,6 +128,7 @@ const GenreFilter = () => {
             </select>
           </div>
 
+          {/* Quick Active Genre Badge */}
           {mode === "genre" && selectedGenreObj && (
             <button
               className="genre-active-pill"
@@ -110,17 +140,77 @@ const GenreFilter = () => {
             </button>
           )}
 
+          {/* All Genres Chips Expand Toggle */}
           <button
             className={`genre-toggle-pill ${showAllGenres ? "expanded" : ""}`}
             onClick={() => setShowAllGenres(!showAllGenres)}
             title="Toggle genre chips"
+            aria-expanded={showAllGenres}
           >
-            {showAllGenres ? "Hide ▲" : "Chips ▾"}
+            {showAllGenres ? "Chips ▲" : "Chips ▾"}
+          </button>
+
+          {/* Advanced Filter Drawer Button (Collapsible) */}
+          <button
+            className={`advanced-filters-trigger-btn ${
+              activeAdvancedCount > 0 ? "has-filters" : ""
+            } ${showFilterDrawer ? "open" : ""}`}
+            onClick={() => setShowFilterDrawer(!showFilterDrawer)}
+            aria-expanded={showFilterDrawer}
+            title="Stream platforms, rating, and era filters"
+          >
+            <span className="filter-icon">⚙️</span>
+            <span className="filter-trigger-label">Filters</span>
+            {activeAdvancedCount > 0 && (
+              <span className="filter-trigger-badge">{activeAdvancedCount}</span>
+            )}
+            <span className="filter-arrow">{showFilterDrawer ? "▲" : "▾"}</span>
           </button>
         </div>
       </div>
 
-      {/* Expandable Genre Pills Grid (Fully wrapped, no overflow) */}
+      {/* Active Filter Chips Bar (Quick 1-tap removal without opening drawer) */}
+      {activeAdvancedCount > 0 && (
+        <div className="active-filters-summary-bar">
+          <span className="summary-label">Active:</span>
+          {ottProvider && activeOttObj && (
+            <span
+              className="summary-filter-chip"
+              onClick={() => dispatch(setOttProvider(null))}
+              title="Remove stream filter"
+            >
+              {activeOttObj.label} <span className="chip-x">✕</span>
+            </span>
+          )}
+          {minRating > 0 && activeRatingObj && (
+            <span
+              className="summary-filter-chip"
+              onClick={() => dispatch(setMinRating(0))}
+              title="Remove score filter"
+            >
+              {activeRatingObj.label} <span className="chip-x">✕</span>
+            </span>
+          )}
+          {yearEra !== "all" && activeEraObj && (
+            <span
+              className="summary-filter-chip"
+              onClick={() => dispatch(setYearEra("all"))}
+              title="Remove era filter"
+            >
+              {activeEraObj.label} <span className="chip-x">✕</span>
+            </span>
+          )}
+          <button
+            type="button"
+            className="summary-clear-all-btn"
+            onClick={handleResetFilters}
+          >
+            Reset All
+          </button>
+        </div>
+      )}
+
+      {/* Expandable Genre Pills Grid */}
       {showAllGenres && (
         <div className="all-genres-wrap-container">
           {genres.map((g) => {
@@ -138,47 +228,73 @@ const GenreFilter = () => {
         </div>
       )}
 
-      {/* Advanced Quick Filters: OTT, Rating & Era */}
-      <div className="sub-filters-container">
-        <div className="filter-group">
-          <span className="filter-group-label">Stream:</span>
-          {OTT_FILTERS.map((of) => (
-            <button
-              key={of.label}
-              onClick={() => dispatch(setOttProvider(of.value))}
-              className={`filter-tag ${ottProvider === of.value ? "selected" : ""}`}
-            >
-              {of.label}
-            </button>
-          ))}
-        </div>
+      {/* Advanced Quick Filters Drawer (Smooth Collapsible Drawer) */}
+      {showFilterDrawer && (
+        <div className="sub-filters-drawer-panel">
+          <div className="drawer-header-row">
+            <span className="drawer-title">Refine Movies by Stream, Score & Era</span>
+            {activeAdvancedCount > 0 && (
+              <button
+                type="button"
+                className="drawer-reset-btn"
+                onClick={handleResetFilters}
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
 
-        <div className="filter-group">
-          <span className="filter-group-label">Score:</span>
-          {RATING_FILTERS.map((rf) => (
-            <button
-              key={rf.value}
-              onClick={() => dispatch(setMinRating(rf.value))}
-              className={`filter-tag ${minRating === rf.value ? "selected" : ""}`}
-            >
-              {rf.label}
-            </button>
-          ))}
-        </div>
+          <div className="drawer-groups-grid">
+            {/* Stream Filter */}
+            <div className="filter-group">
+              <span className="filter-group-label">📺 Streaming OTT:</span>
+              <div className="filter-tags-row">
+                {OTT_FILTERS.map((of) => (
+                  <button
+                    key={of.label}
+                    onClick={() => dispatch(setOttProvider(of.value))}
+                    className={`filter-tag ${ottProvider === of.value ? "selected" : ""}`}
+                  >
+                    {of.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <div className="filter-group">
-          <span className="filter-group-label">Era:</span>
-          {ERA_FILTERS.map((ef) => (
-            <button
-              key={ef.value}
-              onClick={() => dispatch(setYearEra(ef.value))}
-              className={`filter-tag ${yearEra === ef.value ? "selected" : ""}`}
-            >
-              {ef.label}
-            </button>
-          ))}
+            {/* Score Filter */}
+            <div className="filter-group">
+              <span className="filter-group-label">⭐ Minimum Score:</span>
+              <div className="filter-tags-row">
+                {RATING_FILTERS.map((rf) => (
+                  <button
+                    key={rf.value}
+                    onClick={() => dispatch(setMinRating(rf.value))}
+                    className={`filter-tag ${minRating === rf.value ? "selected" : ""}`}
+                  >
+                    {rf.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Era Filter */}
+            <div className="filter-group">
+              <span className="filter-group-label">⏳ Release Era:</span>
+              <div className="filter-tags-row">
+                {ERA_FILTERS.map((ef) => (
+                  <button
+                    key={ef.value}
+                    onClick={() => dispatch(setYearEra(ef.value))}
+                    className={`filter-tag ${yearEra === ef.value ? "selected" : ""}`}
+                  >
+                    {ef.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* AI Cinema Prompt Shortcut */}
       <div

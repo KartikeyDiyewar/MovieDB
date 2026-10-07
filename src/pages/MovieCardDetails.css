@@ -734,9 +734,29 @@
     width: 100%;
   }
 
+  .details-actions-bar {
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x proximity;
+    gap: 0.5rem;
+    padding-bottom: 6px;
+    margin-bottom: 1rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .details-actions-bar::-webkit-scrollbar {
+    display: none;
+  }
+
   .action-btn {
-    padding: 0.55rem 1rem;
+    padding: 0.5rem 0.95rem;
     font-size: 0.82rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: start;
   }
 
   .vpn-stream-banner {
