@@ -152,9 +152,14 @@
 
 .details-main-grid {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px minmax(0, 1fr);
   gap: 2.5rem;
   align-items: flex-end;
+}
+
+.details-info-col {
+  min-width: 0;
+  width: 100%;
 }
 
 .details-poster-col {
@@ -701,8 +706,13 @@
   }
 
   .details-main-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
+  }
+
+  .details-info-col {
+    min-width: 0;
+    width: 100%;
   }
 
   .details-poster-col {
@@ -745,6 +755,8 @@
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .details-actions-bar::-webkit-scrollbar {
