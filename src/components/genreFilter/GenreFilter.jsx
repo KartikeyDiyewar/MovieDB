@@ -7,6 +7,7 @@ import {
   setYearEra,
   openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./GenreFilter.css";
 
 const PRESET_CATEGORIES = [
@@ -164,7 +165,9 @@ const GenreFilter = () => {
         title="Open KD Cinema AI"
       >
         <div className="ai-discovery-text">
-          <span className="ai-discovery-badge">AI</span>
+          <span className="ai-discovery-badge">
+            <AiSparkIcon size={12} /> AI
+          </span>
           <span>
             <strong>Cinema Assistant:</strong> Can&apos;t decide what to watch?
             Chat with our AI for recommendations, vibes, and streaming...

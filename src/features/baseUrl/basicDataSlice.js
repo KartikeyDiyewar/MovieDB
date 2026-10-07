@@ -21,6 +21,7 @@ const initialState = {
   surpriseMovie: null,
   isSurpriseOpen: false,
   isAiModalOpen: false,
+  aiSearchSummary: null,
   genres: [
     { id: 878, name: "Sci-Fi 🚀" },
     { id: 28, name: "Action 💥" },
@@ -199,10 +200,25 @@ export const basicDataSlice = createSlice({
       state.urlData = [];
       state.isData = false;
     },
+    setAiSearchResults: (state, action) => {
+      const { results, query, summary } = action.payload;
+      state.isSearch = true;
+      state.mode = "search";
+      state.searchTerm = query;
+      state.aiSearchSummary = summary || null;
+      state.urlData = results || [];
+      state.isData = Boolean(results && results.length > 0);
+      state.totalData = { total_results: results ? results.length : 0 };
+      state.selectedGenre = null;
+      state.currentPage = 1;
+      state.totalPages = 1;
+      state.error = null;
+    },
     clearSearch: (state) => {
       state.isSearch = false;
       state.mode = "category";
       state.searchTerm = "";
+      state.aiSearchSummary = null;
       state.currentPage = 1;
       state.urlData = [];
       state.isData = false;
@@ -337,6 +353,7 @@ export const basicDataSlice = createSlice({
 
 export const {
   setSearch,
+  setAiSearchResults,
   setSelect,
   setGenre,
   setMinRating,

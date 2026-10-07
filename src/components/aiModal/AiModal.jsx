@@ -7,6 +7,7 @@ import {
 } from "../../features/baseUrl/basicDataSlice";
 import { tmdbapi } from "../../api/token";
 import { chatWithAiAssistant, CHAT_STARTERS } from "../../utils/aiService";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./AiModal.css";
 
 const INITIAL_MESSAGE = {
@@ -153,19 +154,7 @@ const AiModal = () => {
         <div className="ai-modal-header">
           <div className="ai-header-left">
             <div className="ai-header-icon">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-              </svg>
+              <AiSparkIcon size={18} />
             </div>
             <div className="ai-header-titles">
               <h3>KD Cinema AI</h3>
@@ -202,7 +191,7 @@ const AiModal = () => {
             >
               {msg.role === "assistant" && (
                 <div className="ai-avatar">
-                  <span>AI</span>
+                  <AiSparkIcon size={14} />
                 </div>
               )}
 

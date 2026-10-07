@@ -7,6 +7,7 @@ import {
   openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
 import { tmdbapi } from "../../api/token";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./HeroBanner.css";
 
 const HeroBanner = () => {
@@ -114,19 +115,7 @@ const HeroBanner = () => {
             onClick={() => dispatch(openAiModal())}
             title="Ask KD Cinema AI for movie recommendations"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-            </svg>
+            <AiSparkIcon size={16} />
             Ask Cinema AI
           </button>
         </div>

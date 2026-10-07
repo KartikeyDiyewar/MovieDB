@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { getAiMovieBreakdown } from "../../utils/aiService";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./AiMovieBreakdown.css";
 
 const AiMovieBreakdown = ({ movieTitle, releaseYear }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("verdict"); // "verdict" | "ending"
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [spoilerRevealed, setSpoilerRevealed] = useState(false);
 
   const handleFetchInsight = async () => {
     if (data) {
@@ -22,7 +25,7 @@ const AiMovieBreakdown = ({ movieTitle, releaseYear }) => {
       const result = await getAiMovieBreakdown(movieTitle, releaseYear);
       setData(result);
     } catch (err) {
-      setError(err.message || "Failed to load film notes.");
+      setError(err.message || "Failed to load Cinema AI notes.");
     } finally {
       setLoading(false);
     }
@@ -33,23 +36,11 @@ const AiMovieBreakdown = ({ movieTitle, releaseYear }) => {
       <div className="ai-breakdown-header">
         <div className="ai-breakdown-title-row">
           <div className="ai-critic-icon">
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-            </svg>
+            <AiSparkIcon size={16} />
           </div>
           <div className="ai-breakdown-titles">
-            <h4>Cinema AI Critic Notes</h4>
-            <span className="ai-critic-tag">Themes, Audience Match & Trivia</span>
+            <h4>Cinema AI Intelligence</h4>
+            <span className="ai-critic-tag">30-Sec Verdict, Vibe DNA & Ending Clues</span>
           </div>
         </div>
 
@@ -61,8 +52,8 @@ const AiMovieBreakdown = ({ movieTitle, releaseYear }) => {
           {loading
             ? "Analyzing..."
             : isOpen && data
-            ? "Hide Notes ▲"
-            : "Film Notes ▼"}
+            ? "Hide Intelligence ▲"
+            : "AI Intelligence ▼"}
         </button>
       </div>
 
@@ -71,7 +62,7 @@ const AiMovieBreakdown = ({ movieTitle, releaseYear }) => {
           {loading && (
             <div className="breakdown-loading">
               <div className="breakdown-spinner" />
-              <p>Analyzing film themes, critical consensus and trivia...</p>
+              <p>Cinema AI is analyzing narrative arcs, pacing, themes & ending clues...</p>
             </div>
           )}
 
@@ -88,36 +79,123 @@ const AiMovieBreakdown = ({ movieTitle, releaseYear }) => {
           )}
 
           {data && !loading && (
-            <div className="breakdown-grid">
-              {/* Vibe Tags */}
-              <div className="breakdown-section vibe-section">
-                <span className="breakdown-label">Film Atmosphere:</span>
-                <div className="vibe-tags-row">
-                  {data.vibe.map((word, i) => (
-                    <span key={i} className="vibe-tag-pill">
-                      #{word}
-                    </span>
-                  ))}
+            <div className="breakdown-body">
+              {/* Tab Navigation */}
+              <div className="breakdown-tabs">
+                <button
+                  className={`breakdown-tab-btn ${activeTab === "verdict" ? "active" : ""}`}
+                  onClick={() => setActiveTab("verdict")}
+                >
+                  ⚡ 30-Sec Verdict & DNA
+                </button>
+                <button
+                  className={`breakdown-tab-btn ${activeTab === "ending" ? "active" : ""}`}
+                  onClick={() => setActiveTab("ending")}
+                >
+                  👁️ Ending Explained & Clues
+                </button>
+              </div>
+
+              {/* Tab 1: 30-Sec Verdict & DNA */}
+              {activeTab === "verdict" && (
+                <div className="breakdown-grid">
+                  {/* Vibe Tags */}
+                  <div className="breakdown-section vibe-section">
+                    <span className="breakdown-label">Film Atmosphere:</span>
+                    <div className="vibe-tags-row">
+                      {data.vibe.map((word, i) => (
+                        <span key={i} className="vibe-tag-pill">
+                          #{word}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Cinematic DNA */}
+                  <div className="breakdown-section dna-section">
+                    <span className="breakdown-label">Cinematic DNA:</span>
+                    <p className="dna-badge">{data.cinematicDna}</p>
+                  </div>
+
+                  {/* Watch If / Skip If Grid */}
+                  <div className="verdict-columns">
+                    <div className="verdict-col watch-if">
+                      <span className="verdict-col-label">✅ Watch If:</span>
+                      <p>{data.watchIf}</p>
+                    </div>
+                    <div className="verdict-col skip-if">
+                      <span className="verdict-col-label">🛑 Skip If:</span>
+                      <p>{data.skipIf}</p>
+                    </div>
+                  </div>
+
+                  {/* Pacing */}
+                  <div className="breakdown-section">
+                    <span className="breakdown-label">Pacing Score:</span>
+                    <p className="pacing-text">{data.pacing}</p>
+                  </div>
+
+                  {/* Trivia */}
+                  <div className="breakdown-section trivia-section">
+                    <span className="breakdown-label">Behind-The-Scenes Trivia:</span>
+                    <p className="breakdown-text trivia-text">{data.trivia}</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Target Audience */}
-              <div className="breakdown-section">
-                <span className="breakdown-label">Audience Match:</span>
-                <p className="breakdown-text">{data.targetAudience}</p>
-              </div>
+              {/* Tab 2: Ending Explained & Clues (Spoiler Safe) */}
+              {activeTab === "ending" && (
+                <div className="ending-tab-container">
+                  {!spoilerRevealed ? (
+                    <div className="spoiler-shield-card">
+                      <div className="spoiler-shield-icon">🔒</div>
+                      <h5>Spoiler Warning</h5>
+                      <p>
+                        This breakdown analyzes the final act, climax, plot twists,
+                        and hidden director clues.
+                      </p>
+                      <button
+                        className="reveal-spoiler-btn"
+                        onClick={() => setSpoilerRevealed(true)}
+                      >
+                        👁️ Reveal Ending Breakdown & Clues
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="ending-revealed-content">
+                      <div className="ending-header-row">
+                        <span className="ending-tag">Climax & Ending Breakdown</span>
+                        <button
+                          className="hide-spoiler-btn"
+                          onClick={() => setSpoilerRevealed(false)}
+                        >
+                          🔒 Hide Spoilers
+                        </button>
+                      </div>
 
-              {/* Watch Mood */}
-              <div className="breakdown-section">
-                <span className="breakdown-label">Viewing Setting:</span>
-                <p className="breakdown-text">{data.watchMood}</p>
-              </div>
+                      <div className="ending-block">
+                        <span className="breakdown-label">What Happened in the Ending:</span>
+                        <p className="ending-text">{data.endingExplanation}</p>
+                      </div>
 
-              {/* Trivia */}
-              <div className="breakdown-section trivia-section">
-                <span className="breakdown-label">Behind-the-Scenes Trivia:</span>
-                <p className="breakdown-text trivia-text">{data.trivia}</p>
-              </div>
+                      {data.hiddenClues && data.hiddenClues.length > 0 && (
+                        <div className="ending-block">
+                          <span className="breakdown-label">
+                            Subtle Director Clues You Missed:
+                          </span>
+                          <ul className="clues-list">
+                            {data.hiddenClues.map((clue, idx) => (
+                              <li key={idx} className="clue-item">
+                                {clue}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -6,7 +6,10 @@ import {
   setSearch,
   searchMovie,
   clearSearch,
+  setAiSearchResults,
 } from "../../features/baseUrl/basicDataSlice";
+import { searchMovieWithAi } from "../../utils/aiService";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./SimpleSearch.css";
 
 const SimpleSearch = () => {
@@ -16,6 +19,8 @@ const SimpleSearch = () => {
   const [localTerm, setLocalTerm] = useState(searchTerm || "");
   const [suggestions, setSuggestions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAiMode, setIsAiMode] = useState(false);
+  const [isAiSearching, setIsAiSearching] = useState(false);
   const searchContainerRef = useRef(null);
 
   // Close dropdown on outside click
@@ -32,9 +37,9 @@ const SimpleSearch = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Debounced autocomplete query
+  // Debounced autocomplete query (for standard title mode only)
   useEffect(() => {
-    if (!localTerm || localTerm.trim().length < 2) {
+    if (isAiMode || !localTerm || localTerm.trim().length < 2) {
       setSuggestions([]);
       setIsDropdownOpen(false);
       return;
@@ -54,15 +59,43 @@ const SimpleSearch = () => {
     }, 350);
 
     return () => clearTimeout(timer);
-  }, [localTerm]);
+  }, [localTerm, isAiMode]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!localTerm.trim()) return;
+    const query = localTerm.trim();
+    if (!query) return;
+
     setIsDropdownOpen(false);
-    dispatch(setSearch(localTerm.trim()));
-    dispatch(searchMovie());
-    navigate("/");
+
+    if (isAiMode) {
+      // AI Reverse Plot Search
+      setIsAiSearching(true);
+      try {
+        const aiRes = await searchMovieWithAi(query);
+        dispatch(
+          setAiSearchResults({
+            results: aiRes.movies,
+            query: query,
+            summary: aiRes.summary,
+          })
+        );
+        navigate("/");
+      } catch (err) {
+        console.error("AI Search error:", err);
+        // Fallback to normal search
+        dispatch(setSearch(query));
+        dispatch(searchMovie());
+        navigate("/");
+      } finally {
+        setIsAiSearching(false);
+      }
+    } else {
+      // Standard TMDB search
+      dispatch(setSearch(query));
+      dispatch(searchMovie());
+      navigate("/");
+    }
   };
 
   const handleClear = () => {
@@ -82,18 +115,41 @@ const SimpleSearch = () => {
 
   return (
     <div className="search-wrapper" ref={searchContainerRef}>
-      <form className="search-form item1" onSubmit={handleSubmit}>
+      <form
+        className={`search-form item1 ${isAiMode ? "ai-active" : ""}`}
+        onSubmit={handleSubmit}
+      >
+        {/* AI Mode Toggle Pill */}
+        <button
+          type="button"
+          className={`search-ai-toggle ${isAiMode ? "active" : ""}`}
+          onClick={() => setIsAiMode(!isAiMode)}
+          title={
+            isAiMode
+              ? "Switch to standard title search"
+              : "Switch to AI plot & scene reverse search"
+          }
+        >
+          <AiSparkIcon size={13} />
+          <span className="search-ai-text">{isAiMode ? "AI Search" : "AI"}</span>
+        </button>
+
         <div className="search-input-wrapper">
           <input
             value={localTerm}
             onChange={(e) => setLocalTerm(e.target.value)}
             onFocus={() => {
-              if (suggestions.length > 0) setIsDropdownOpen(true);
+              if (!isAiMode && suggestions.length > 0) setIsDropdownOpen(true);
             }}
-            placeholder="Search movies..."
+            placeholder={
+              isAiMode
+                ? "Describe any plot or scene... (AI finds it)"
+                : "Search movies..."
+            }
             id="search-holder"
             type="text"
             autoComplete="off"
+            disabled={isAiSearching}
           />
           {localTerm && (
             <button
@@ -106,58 +162,61 @@ const SimpleSearch = () => {
             </button>
           )}
         </div>
-        <button type="submit" className="search-btn" title="Search">
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+
+        <button
+          type="submit"
+          className={`search-btn ${isAiMode ? "ai-submit" : ""}`}
+          title={isAiMode ? "Run AI reverse plot search" : "Search"}
+          disabled={isAiSearching}
+        >
+          {isAiSearching ? (
+            <div className="search-btn-spinner" />
+          ) : (
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          )}
         </button>
       </form>
 
       {/* Autocomplete Dropdown Preview */}
-      {isDropdownOpen && suggestions.length > 0 && (
+      {!isAiMode && isDropdownOpen && suggestions.length > 0 && (
         <div className="search-dropdown">
           {suggestions.map((m) => {
             const thumb = m.poster_path
               ? `https://image.tmdb.org/t/p/w92${m.poster_path}`
               : null;
             const year = m.release_date
-              ? new Date(m.release_date).getFullYear()
-              : "N/A";
-            const rating = m.vote_average ? m.vote_average.toFixed(1) : "NR";
-
+              ? m.release_date.slice(0, 4)
+              : "";
             return (
               <div
                 key={m.id}
-                className="search-dropdown-item"
+                className="dropdown-item"
                 onClick={() => handleSelectSuggestion(m)}
               >
                 {thumb ? (
                   <img
-                    className="dropdown-thumb"
                     src={thumb}
                     alt={m.title}
-                    loading="lazy"
+                    className="dropdown-thumb"
                   />
                 ) : (
                   <div className="dropdown-thumb-placeholder">🎬</div>
                 )}
-                <div className="dropdown-info">
+                <div className="dropdown-meta">
                   <span className="dropdown-title">{m.title}</span>
-                  <div className="dropdown-meta">
-                    <span>{year}</span>
-                    <span>•</span>
-                    <span className="dropdown-rating">★ {rating}</span>
-                  </div>
+                  {year && <span className="dropdown-year">{year}</span>}
                 </div>
               </div>
             );

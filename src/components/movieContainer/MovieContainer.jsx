@@ -7,6 +7,7 @@ import {
   setPage,
 } from "../../features/baseUrl/basicDataSlice";
 import MovieCard from "../movieCard/MovieCard";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./MovieContainer.css";
 
 const SKELETON_COUNT = 10;
@@ -26,6 +27,7 @@ const MovieContainer = () => {
     totalPages,
     mode,
     searchTerm,
+    aiSearchSummary,
   } = useSelector((state) => state.base);
 
   const observerRef = useRef(null);
@@ -38,7 +40,7 @@ const MovieContainer = () => {
   // Fetch movies when category, genre, filters, or page changes
   useEffect(() => {
     if (mode === "search") {
-      if (searchTerm && searchTerm.trim()) {
+      if (searchTerm && searchTerm.trim() && !aiSearchSummary) {
         dispatch(searchMovie());
       }
     } else {
@@ -53,6 +55,7 @@ const MovieContainer = () => {
     mode,
     currentPage,
     searchTerm,
+    aiSearchSummary,
   ]);
 
   // Infinite Scroll Observer callback
@@ -82,6 +85,18 @@ const MovieContainer = () => {
 
   return (
     <section className="catalog-section">
+      {mode === "search" && aiSearchSummary && (
+        <div className="ai-search-summary-banner">
+          <div className="ai-search-summary-icon">
+            <AiSparkIcon size={16} />
+          </div>
+          <div className="ai-search-summary-text">
+            <span className="ai-search-summary-badge">Cinema AI Reverse Search</span>
+            <p>{aiSearchSummary}</p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="error-banner">
           <span className="error-icon">⚠️</span>

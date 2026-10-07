@@ -23,6 +23,63 @@
   box-shadow: 0 0 16px var(--accent-glow);
 }
 
+.search-form.ai-active {
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.2);
+}
+
+/* AI Mode Toggle Inside Search Bar */
+.search-ai-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  padding: 3px 8px;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 8px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.search-ai-toggle:hover {
+  background: rgba(129, 140, 248, 0.15);
+  border-color: rgba(129, 140, 248, 0.4);
+  color: #a5b4fc;
+}
+
+.search-ai-toggle.active {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+  border-color: #818cf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
+}
+
+.search-ai-toggle .ai-icon-svg {
+  color: #a5b4fc;
+}
+
+.search-ai-toggle.active .ai-icon-svg {
+  color: #ffffff;
+}
+
+.search-btn.ai-submit {
+  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+}
+
+.search-btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
 .search-input-wrapper {
   display: flex;
   align-items: center;

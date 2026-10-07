@@ -7,6 +7,7 @@ import {
   openSurpriseModal,
   openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
+import AiSparkIcon from "../common/AiSparkIcon";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -93,26 +94,13 @@ const Navbar = () => {
 
         {/* Actions */}
         <div className="navbar-actions">
-          {/* Claude / OpenAI style Cinema AI Button */}
+          {/* Cinema AI Button */}
           <button
             className="navbar-ai-btn"
             onClick={handleAiClick}
             title="Open Cinema AI conversational assistant"
           >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="ai-icon-svg"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-            </svg>
+            <AiSparkIcon size={16} />
             <span className="ai-label">Cinema AI</span>
           </button>
 

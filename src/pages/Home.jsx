@@ -1,6 +1,7 @@
 import Navbar from "../components/navbar/Navbar";
 import HeroBanner from "../components/heroBanner/HeroBanner";
 import GenreFilter from "../components/genreFilter/GenreFilter";
+import AiMoodMatcher from "../components/aiMoodMatcher/AiMoodMatcher";
 import MovieContainer from "../components/movieContainer/MovieContainer";
 import AdBanner from "../components/ads/AdBanner";
 import Footer from "../components/footer/Footer";
@@ -16,6 +17,7 @@ const Home = () => {
       <Navbar />
       <HeroBanner />
       <GenreFilter />
+      <AiMoodMatcher />
       <MovieContainer />
       <AdBanner />
       <Footer />
