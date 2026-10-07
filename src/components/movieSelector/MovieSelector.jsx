@@ -1,19 +1,19 @@
-import React from "react";
 import "./MovieSelector.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSelect } from "../../features/baseUrl/basicDataSlice";
 
 const MovieSelector = () => {
   const dispatch = useDispatch();
+  const { selectTerm } = useSelector((state) => state.base);
 
   return (
     <select
+      value={selectTerm}
       onChange={(e) => {
         dispatch(setSelect(e.target.value));
       }}
       name="movie-selector"
       className="movie-selector item3"
-      defaultValue="popular"
     >
       <option value="popular">Popular Movies</option>
       <option value="now_playing">Now Playing</option>

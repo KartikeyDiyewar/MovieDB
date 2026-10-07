@@ -1,30 +1,54 @@
-import React from "react";
-import "./MovieCard.css";
 import { useNavigate } from "react-router-dom";
+import "./MovieCard.css";
 
 const MovieCard = ({ movie }) => {
-  const serealizedData = JSON.stringify(movie);
   const navigate = useNavigate();
-  const imageBasePath = "https://image.tmdb.org/t/p/w500/";
+  if (!movie) return null;
+
+  const imageBasePath = "https://image.tmdb.org/t/p/w500";
+  const posterUrl = movie.poster_path
+    ? `${imageBasePath}${movie.poster_path}`
+    : null;
+
+  const releaseYear = movie.release_date
+    ? new Date(movie.release_date).getFullYear()
+    : "N/A";
+
+  const rating =
+    typeof movie.vote_average === "number" && movie.vote_average > 0
+      ? movie.vote_average.toFixed(1)
+      : "NR";
+
   return (
     <article
       className="card-container"
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate(`/moviecard/${encodeURIComponent(serealizedData)}`);
-      }}
+      onClick={() => navigate(`/movie/${movie.id}`)}
+      title={movie.title}
     >
-      <img
-        className="movie-poster"
-        src={imageBasePath + movie.poster_path}
-        alt={movie.title}
-      />
+      <div className="poster-wrapper">
+        {posterUrl ? (
+          <img
+            className="movie-poster"
+            src={posterUrl}
+            alt={movie.title || "Movie poster"}
+            loading="lazy"
+          />
+        ) : (
+          <div className="poster-placeholder">
+            <span>🎬</span>
+            <p>No Image</p>
+          </div>
+        )}
+        <div className="rating-badge">
+          <span className="star-icon">★</span>
+          <span>{rating}</span>
+        </div>
+      </div>
       <div className="movie-text-container">
-        <h4 className="movie-text">{movie.title}</h4>
-        <h4 className="movie-text">
-          <span className="star-code"> &#11088;</span>{" "}
-          {movie.vote_average.toFixed(2)}
-        </h4>
+        <h4 className="movie-title">{movie.title || "Untitled"}</h4>
+        <div className="movie-meta">
+          <span className="movie-year">{releaseYear}</span>
+        </div>
       </div>
     </article>
   );
