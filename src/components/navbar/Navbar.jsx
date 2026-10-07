@@ -4,6 +4,7 @@ import SimpleSearch from "../simpleSearch/SimpleSearch";
 import {
   clearSearch,
   openSurpriseModal,
+  openAiModal,
 } from "../../features/baseUrl/basicDataSlice";
 import "./Navbar.css";
 
@@ -21,6 +22,10 @@ const Navbar = () => {
 
   const handleSurpriseClick = () => {
     dispatch(openSurpriseModal());
+  };
+
+  const handleAiClick = () => {
+    dispatch(openAiModal());
   };
 
   return (
@@ -81,6 +86,15 @@ const Navbar = () => {
 
         {/* Actions */}
         <div className="navbar-actions">
+          <button
+            className="navbar-ai-btn"
+            onClick={handleAiClick}
+            title="Ask KD Cinema AI for personalized movie recommendations"
+          >
+            <span className="ai-icon">✨</span>
+            <span className="ai-label">AI Genie</span>
+          </button>
+
           <button
             className="navbar-surprise-btn"
             onClick={handleSurpriseClick}

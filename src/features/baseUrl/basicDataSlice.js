@@ -20,6 +20,7 @@ const initialState = {
   activeTrailer: null, // { title: string, videoKey: string } | null
   surpriseMovie: null,
   isSurpriseOpen: false,
+  isAiModalOpen: false,
   genres: [
     { id: 878, name: "Sci-Fi 🚀" },
     { id: 28, name: "Action 💥" },
@@ -231,6 +232,12 @@ export const basicDataSlice = createSlice({
       state.isSurpriseOpen = false;
       state.surpriseMovie = null;
     },
+    openAiModal: (state) => {
+      state.isAiModalOpen = true;
+    },
+    closeAiModal: (state) => {
+      state.isAiModalOpen = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -342,6 +349,8 @@ export const {
   closeTrailerModal,
   openSurpriseModal,
   closeSurpriseModal,
+  openAiModal,
+  closeAiModal,
 } = basicDataSlice.actions;
 
 export default basicDataSlice.reducer;

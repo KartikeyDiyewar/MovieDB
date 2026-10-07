@@ -6,6 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/api/groq': {
+        target: 'https://api.groq.com/openai/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/groq/, ''),
+      },
       '/api/tmdb': {
         target: 'https://api.themoviedb.org/3',
         changeOrigin: true,
@@ -15,6 +20,11 @@ export default defineConfig({
   },
   preview: {
     proxy: {
+      '/api/groq': {
+        target: 'https://api.groq.com/openai/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/groq/, ''),
+      },
       '/api/tmdb': {
         target: 'https://api.themoviedb.org/3',
         changeOrigin: true,

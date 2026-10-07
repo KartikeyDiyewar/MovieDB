@@ -12,6 +12,7 @@ import AdBanner from "../components/ads/AdBanner";
 import Footer from "../components/footer/Footer";
 import TrailerModal from "../components/trailerModal/TrailerModal";
 import SurpriseModal from "../components/surpriseModal/SurpriseModal";
+import AiModal from "../components/aiModal/AiModal";
 import Toast from "../components/toast/Toast";
 import BackToTop from "../components/backToTop/BackToTop";
 import {
@@ -492,6 +493,7 @@ const MovieCardDetails = () => {
 
       <TrailerModal />
       <SurpriseModal />
+      <AiModal />
       <Toast />
       <BackToTop />
     </div>
